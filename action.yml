@@ -1,0 +1,38 @@
+# action.yml
+name: "Azure Resource Manager (ARM) Template Deployment"
+description: "Use this GitHub Action task deploy an Azure Resource Manager (ARM) template"
+inputs:
+  creds:
+    description: 'Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS'
+    required: true
+  resourceGroupName:
+    description: "Provide the name of a resource group."
+    required: true
+  templateLocation:
+    description: "Specify the path to the Azure Resource Manager template."
+    required: true
+  deploymentMode:
+    description: "Incremental (only add resources to resource group) or Complete (remove extra resources from resource group)."
+    required: false
+    default: Incremental
+  deploymentName:
+    description: "Specifies the name of the resource group deployment to create."
+    required: false
+  parameters:
+    description: "Supply deployment parameter values."
+    required: false
+branding:
+  color: orange
+  icon: package
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - |
+      deploy \ 
+        --credentials ${{ inputs.creds }}
+        --resource-group-name ${{ inputs.resourceGroupName }} \
+        --templateLocation ${{ inputs.resourceGroupName }} \
+        --deploymentMode ${{ inputs.deploymentMode }} \
+        --deploymentName ${{ inputs.deploymentName }} \
+        --parameters ${{ inputs.parameters }}
