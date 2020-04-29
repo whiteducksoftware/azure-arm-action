@@ -5,21 +5,24 @@ inputs:
   creds:
     description: 'Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS'
     required: true
+  subscriptionId:
+    description: "Provide the subscription id."
+    required: true
   resourceGroupName:
     description: "Provide the name of a resource group."
     required: true
   templateLocation:
     description: "Specify the path to the Azure Resource Manager template."
     required: true
+  deploymentName:
+    description: "Specifies the name of the resource group deployment to create."
+    required: true
   deploymentMode:
     description: "Incremental (only add resources to resource group) or Complete (remove extra resources from resource group)."
     required: false
     default: Incremental
-  deploymentName:
-    description: "Specifies the name of the resource group deployment to create."
-    required: false
-  parameters:
-    description: "Supply deployment parameter values."
+  parametersLocation:
+    description: "Specify the path to the Azure Resource Manager parameters file."
     required: false
 branding:
   color: orange
@@ -32,14 +35,16 @@ runs:
     - -v 
     - debug 
     - --credentials 
-    - ${{ inputs.creds }} 
-    - --resourceGroupName 
-    - ${{ inputs.resourceGroupName }} 
-    - --templateLocation 
-    - ${{ inputs.resourceGroupName }} 
-    - --deploymentMode 
-    - ${{ inputs.deploymentMode }} 
-    - --deploymentName 
-    - ${{ inputs.deploymentName }}
-    - --parameters 
-    - ${{ inputs.parameters }}
+    - ${{ inputs.creds }}
+    - --subscriptionId
+    - ${{ inputs.subscriptionId }}
+    - --resourceGroupName
+    - ${{ inputs.resourceGroupName }}
+    - --templateLocation
+    - ${{ inputs.resourceGroupName }}
+    - --deploymentMode
+    - ${{ inputs.deploymentMode }}
+    - --deploymentName
+    - ${{ inputs.deploymentName }
+    - --parametersLocation
+    - ${{ inputs.parametersLocation }}
