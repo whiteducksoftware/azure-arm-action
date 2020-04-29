@@ -28,11 +28,18 @@ runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
-    - |
-      deploy \ 
-        --credentials ${{ inputs.creds }}
-        --resource-group-name ${{ inputs.resourceGroupName }} \
-        --templateLocation ${{ inputs.resourceGroupName }} \
-        --deploymentMode ${{ inputs.deploymentMode }} \
-        --deploymentName ${{ inputs.deploymentName }} \
-        --parameters ${{ inputs.parameters }}
+    - deploy 
+    - -v 
+    - debug 
+    - --credentials 
+    - ${{ inputs.creds }} 
+    - --resourceGroupName 
+    - ${{ inputs.resourceGroupName }} 
+    - --templateLocation 
+    - ${{ inputs.resourceGroupName }} 
+    - --deploymentMode 
+    - ${{ inputs.deploymentMode }} 
+    - --deploymentName 
+    - ${{ inputs.deploymentName }}
+    - --parameters 
+    - ${{ inputs.parameters }}

@@ -54,4 +54,10 @@ func init() {
 	// Add flags
 	Cmd.PersistentFlags().String(azure.CredentialsFlagName, "", "Credentials")
 	Cmd.MarkFlagRequired(azure.CredentialsFlagName)
+
+	Cmd.PersistentFlags().String(azure.ResourceGroupNameFlagName, "", "ResourceGroupName")
+	Cmd.PersistentFlags().String(azure.TemplateLocationFlagName, "", "TemplateLocation")
+	Cmd.PersistentFlags().String(azure.DeploymentModeFlagName, "", "DeploymentMode")
+	Cmd.PersistentFlags().String(azure.DeploymentNameFlagName, "", "DeploymentName")
+	Cmd.PersistentFlags().String(azure.ParametersFlagName, "", "Parameters")
 }

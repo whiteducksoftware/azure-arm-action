@@ -13,9 +13,12 @@ import (
 
 // Flag name constants
 const (
-	CredentialsFlagName string = "credentials"
-
-	ServicePrincipalJSONFile string = "servicePrincipalFile"
+	CredentialsFlagName       string = "credentials"
+	ResourceGroupNameFlagName string = "resourceGroupName"
+	TemplateLocationFlagName  string = "templateLocation"
+	DeploymentModeFlagName    string = "deploymentMode"
+	DeploymentNameFlagName    string = "deploymentName"
+	ParametersFlagName        string = "parameters"
 )
 
 // ServicePrincipal represents Azure Sp

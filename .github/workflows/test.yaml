@@ -1,0 +1,14 @@
+on: [push]
+
+jobs:
+  test_action_job:
+    runs-on: ubuntu-latest
+    name: A job to test this action
+    steps:
+      # To use this repository's private action, you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: ARM deployment test
+        uses: ./ # Uses an action in the root directory
+        with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
