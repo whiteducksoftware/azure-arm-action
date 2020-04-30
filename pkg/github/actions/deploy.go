@@ -25,29 +25,14 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
 func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExtended, error) {
-	sp, err := azure.GetServicePrincipal(inputs)
+	sp, err := azure.GetServicePrincipal(inputs.Credentials)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
-	}
-
-	// Load template and parameters if set
-	template, err := util.ReadJSON(inputs.TemplateLocation)
-	if err != nil {
-		return resources.DeploymentExtended{}, err
-	}
-
-	var parameters *map[string]interface{}
-	if inputs.ParametersLocation != "" {
-		parameters, err = util.ReadJSON(inputs.ParametersLocation)
-		if err != nil {
-			return resources.DeploymentExtended{}, err
-		}
 	}
 
 	// Load authorizer from the service principal
@@ -62,7 +47,7 @@ func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExte
 
 	// Validate deployment
 	logrus.Infof("Validating deployment %s, mode: %s", inputs.DeploymentName, inputs.DeploymentMode)
-	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, template, parameters)
+	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, inputs.Parameters)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}
@@ -74,7 +59,7 @@ func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExte
 
 	// Create and wait for completion of the deployment
 	logrus.Infof("Creating deployment %s", inputs.DeploymentName)
-	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, template, parameters)
+	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, inputs.Parameters)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}

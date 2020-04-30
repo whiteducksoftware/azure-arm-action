@@ -33,7 +33,8 @@ func main() {
 
 	// read inptus
 	inputs := opts.Inputs
-	ctx, _ := context.WithTimeout(context.Background(), inputs.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), inputs.Timeout)
+	defer cancel()
 
 	// deploy the template
 	resultDeployment, err := actions.Deploy(ctx, inputs)

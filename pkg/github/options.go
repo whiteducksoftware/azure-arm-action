@@ -17,9 +17,11 @@ package github
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	"github.com/caarlos0/env"
+	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
 // GitHub represents the inputs which github provides us on default
@@ -36,14 +38,14 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials        string        `env:"INPUT_CREDS"`
-	SubscriptionID     string        `env:"INPUT_SUBSCRIPTIONID"`
-	TemplateLocation   string        `env:"INPUT_TEMPLATELOCATION"`
-	ParametersLocation string        `env:"INPUT_PARAMERTERSLOCATION"`
-	ResourceGroupName  string        `env:"INPUT_RESOURCEGROUPNAME"`
-	DeploymentName     string        `env:"INPUT_DEPLOYMENTNAME"`
-	DeploymentMode     string        `env:"INPUT_DEPLOYMENTMODE"`
-	Timeout            time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
+	Credentials       string                 `env:"INPUT_CREDS"`
+	SubscriptionID    string                 `env:"INPUT_SUBSCRIPTIONID"`
+	Template          map[string]interface{} `env:"INPUT_TEMPLATELOCATION"`
+	Parameters        map[string]interface{} `env:"INPUT_PARAMERTERSLOCATION"`
+	ResourceGroupName string                 `env:"INPUT_RESOURCEGROUPNAME"`
+	DeploymentName    string                 `env:"INPUT_DEPLOYMENTNAME"`
+	DeploymentMode    string                 `env:"INPUT_DEPLOYMENTMODE"`
+	Timeout           time.Duration          `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
 // Options is a combined struct of all inputs
@@ -60,7 +62,12 @@ func LoadOptions() (*Options, error) {
 	}
 
 	inputs := Inputs{}
-	if err := env.Parse(&inputs); err != nil {
+	err := env.ParseWithFuncs(&inputs, map[reflect.Type]env.ParserFunc{
+		reflect.TypeOf(map[string]interface{}{}): func(v string) (interface{}, error) {
+			return util.ReadJSON(v)
+		},
+	})
+	if err != nil {
 		return nil, fmt.Errorf("failed to parse inputs: %s", err)
 	}
 

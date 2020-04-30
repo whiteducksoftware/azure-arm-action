@@ -25,7 +25,6 @@ import (
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 )
 
 // Flag name constants
@@ -47,9 +46,9 @@ type ServicePrincipal struct {
 }
 
 // GetServicePrincipalFromFlags builds from the cmd flags a ServicePrincipal
-func GetServicePrincipal(inputs github.Inputs) (*ServicePrincipal, error) {
+func GetServicePrincipal(credentials string) (*ServicePrincipal, error) {
 	var sp ServicePrincipal
-	err := json.Unmarshal([]byte(inputs.Credentials), &sp)
+	err := json.Unmarshal([]byte(credentials), &sp)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
 	}
@@ -85,7 +84,7 @@ func GetDeploymentsClient(subscriptionId string, authorizer autorest.Authorizer)
 
 // ValidateDeployment validates the template deployments and their
 // parameters are correct and will produce a successful deployment.GetResource
-func ValidateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName, deploymentName string, deploymentMode string, template, params *map[string]interface{}) (valid resources.DeploymentValidateResult, err error) {
+func ValidateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName, deploymentName string, deploymentMode string, template, params map[string]interface{}) (valid resources.DeploymentValidateResult, err error) {
 	return deployClient.Validate(ctx,
 		resourceGroupName,
 		deploymentName,
@@ -100,7 +99,7 @@ func ValidateDeployment(ctx context.Context, deployClient resources.DeploymentsC
 
 // CreateDeployment creates a template deployment using the
 // referenced JSON files for the template and its parameters
-func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName string, deploymentName string, deploymentMode string, template, params *map[string]interface{}) (de resources.DeploymentExtended, err error) {
+func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName string, deploymentName string, deploymentMode string, template, params map[string]interface{}) (de resources.DeploymentExtended, err error) {
 	future, err := deployClient.CreateOrUpdate(
 		ctx,
 		resourceGroupName,

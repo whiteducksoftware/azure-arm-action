@@ -24,7 +24,7 @@ import (
 
 // ReadJSON reads a json file, and unmashals it.
 // Very useful for template deployments.
-func ReadJSON(path string) (*map[string]interface{}, error) {
+func ReadJSON(path string) (map[string]interface{}, error) {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
 		logrus.Fatalf("failed to read template file: %v\n", err)
@@ -33,5 +33,5 @@ func ReadJSON(path string) (*map[string]interface{}, error) {
 	if err := json.Unmarshal(data, &contents); err != nil {
 		return nil, err
 	}
-	return &contents, nil
+	return contents, nil
 }
