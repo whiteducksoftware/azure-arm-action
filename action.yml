@@ -45,6 +45,6 @@ runs:
     - --deploymentMode
     - ${{ inputs.deploymentMode }}
     - --deploymentName
-    - ${{ inputs.deploymentName }
+    - ${{ inputs.deploymentName }}
     - --parametersLocation
     - ${{ inputs.parametersLocation }}
