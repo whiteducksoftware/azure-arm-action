@@ -23,10 +23,14 @@ A GitHub Action to deploy ARM templates.
 
 * `parametersLocation` Specify the path to the Azure Resource Manager parameters file.
 
+## Outputs
+
+* `deploymentName` Specifies the complete deployment name which has been generated
+
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v1
+- uses: whiteducksoftware/azure-arm-action@v2
   with:
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
@@ -44,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: whiteducksoftware/azure-arm-action@v1
+    - uses: whiteducksoftware/azure-arm-action@v2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: github-action-arm-rg
