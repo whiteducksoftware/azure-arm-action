@@ -29,7 +29,7 @@ branding:
   icon: package
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://whiteduck/azure-arm-action:v1'
   args:
     - deploy 
     - -v 
