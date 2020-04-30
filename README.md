@@ -49,5 +49,5 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: github-action-arm-rg
         templateLocation: ./azuredeploy.json
-        parameters: storageAccountType=Standard_LRS
+        parameters: <path/to/parameters.json>
 ```
