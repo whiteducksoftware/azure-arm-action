@@ -46,18 +46,18 @@ type ServicePrincipal struct {
 }
 
 // GetServicePrincipalFromFlags builds from the cmd flags a ServicePrincipal
-func GetServicePrincipal(credentials string) (*ServicePrincipal, error) {
+func GetServicePrincipal(credentials string) (ServicePrincipal, error) {
 	var sp ServicePrincipal
 	err := json.Unmarshal([]byte(credentials), &sp)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
+		return ServicePrincipal{}, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
 	}
 
-	return &sp, nil
+	return sp, nil
 }
 
 // GetArmAuthorizerFromServicePrincipal creates an ARM authorizer from an Sp
-func GetArmAuthorizerFromServicePrincipal(sp *ServicePrincipal) (*autorest.BearerAuthorizer, error) {
+func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.BearerAuthorizer, error) {
 	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, sp.Tenant)
 	if err != nil {
 		return nil, err

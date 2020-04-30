@@ -30,13 +30,8 @@ import (
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
 func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExtended, error) {
-	sp, err := azure.GetServicePrincipal(inputs.Credentials)
-	if err != nil {
-		return resources.DeploymentExtended{}, err
-	}
-
 	// Load authorizer from the service principal
-	authorizer, err := azure.GetArmAuthorizerFromServicePrincipal(sp)
+	authorizer, err := azure.GetArmAuthorizerFromServicePrincipal(inputs.Credentials)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}

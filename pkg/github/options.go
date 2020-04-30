@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
+	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
@@ -38,7 +39,7 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials       string                 `env:"INPUT_CREDS"`
+	Credentials       azure.ServicePrincipal `env:"INPUT_CREDS"`
 	SubscriptionID    string                 `env:"INPUT_SUBSCRIPTIONID"`
 	Template          map[string]interface{} `env:"INPUT_TEMPLATELOCATION"`
 	Parameters        map[string]interface{} `env:"INPUT_PARAMERTERSLOCATION"`
@@ -62,11 +63,7 @@ func LoadOptions() (*Options, error) {
 	}
 
 	inputs := Inputs{}
-	err := env.ParseWithFuncs(&inputs, map[reflect.Type]env.ParserFunc{
-		reflect.TypeOf(map[string]interface{}{}): func(v string) (interface{}, error) {
-			return util.ReadJSON(v)
-		},
-	})
+	err := env.ParseWithFuncs(&inputs, customTypeParser)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse inputs: %s", err)
 	}
@@ -75,4 +72,18 @@ func LoadOptions() (*Options, error) {
 		GitHub: github,
 		Inputs: inputs,
 	}, nil
+}
+
+// custom type parser
+var customTypeParser = map[reflect.Type]env.ParserFunc{
+	reflect.TypeOf(azure.ServicePrincipal{}): wrapGetServicePrincipal,
+	reflect.TypeOf(map[string]interface{}{}): wrapReadJSON,
+}
+
+func wrapGetServicePrincipal(v string) (interface{}, error) {
+	return azure.GetServicePrincipal(v)
+}
+
+func wrapReadJSON(v string) (interface{}, error) {
+	return util.ReadJSON(v)
 }
