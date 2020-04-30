@@ -15,5 +15,5 @@ jobs:
             subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
             resourceGroupName: azurearmaction
             templateLocation: ./test/template.json
-            deploymentName: github-action-test-deploymentName
+            deploymentName: github-test
             deploymentMode: Incremental
