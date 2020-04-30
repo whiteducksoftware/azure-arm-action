@@ -34,14 +34,14 @@ type GitHub struct {
 }
 
 type Inputs struct {
-	Credentials       string        `env:"INPUT_CREDS"`
-	SubscriptionID    string        `env:"INPUT_SUBSCRIPTIONID"`
-	TemplateLocation  string        `env:"INPUT_TEMPLATELOCATION"`
-	Parameters        string        `env:"INPUT_PARAMERTERSLOCATION"`
-	ResourceGroupName string        `env:"INPUT_RESOURCEGROUPNAME"`
-	DeploymentName    string        `env:"INPUT_DEPLOYMENTNAME"`
-	DeploymentMode    string        `env:"INPUT_DEPLOYMENTMODE"`
-	Timeout           time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
+	Credentials        string        `env:"INPUT_CREDS"`
+	SubscriptionID     string        `env:"INPUT_SUBSCRIPTIONID"`
+	TemplateLocation   string        `env:"INPUT_TEMPLATELOCATION"`
+	ParametersLocation string        `env:"INPUT_PARAMERTERSLOCATION"`
+	ResourceGroupName  string        `env:"INPUT_RESOURCEGROUPNAME"`
+	DeploymentName     string        `env:"INPUT_DEPLOYMENTNAME"`
+	DeploymentMode     string        `env:"INPUT_DEPLOYMENTMODE"`
+	Timeout            time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
 type Options struct {

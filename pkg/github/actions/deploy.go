@@ -40,8 +40,8 @@ func Deploy(ctx context.Context, inputs github.Inputs) error {
 	}
 
 	var parameters *map[string]interface{}
-	if inputs.Parameters != "" {
-		parameters, err = util.ReadJSON(inputs.Parameters)
+	if inputs.ParametersLocation != "" {
+		parameters, err = util.ReadJSON(inputs.ParametersLocation)
 		if err != nil {
 			return err
 		}
