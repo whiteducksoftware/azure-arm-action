@@ -1,0 +1,16 @@
+name: Build Image
+
+on:
+    pull_request:
+    push:
+        branches:
+            - '*'
+            - '*/*'
+            - '!master'
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: docker/build-push-action@v1
