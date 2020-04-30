@@ -21,7 +21,7 @@ A GitHub Action to deploy ARM templates.
   
 * `deploymentName` Specifies the name of the resource group deployment to create.
 
-* `parameters` description: "Supply deployment parameter values."
+* `parameters` Specify the path to the Azure Resource Manager parameters file.
 
 ## Usage
 
