@@ -36,9 +36,12 @@ func main() {
 	ctx, _ := context.WithTimeout(context.Background(), inputs.Timeout)
 
 	// deploy the template
-	err = actions.Deploy(ctx, inputs)
+	resultDeployment, err := actions.Deploy(ctx, inputs)
 	if err != nil {
 		logrus.Errorf("failed to load options: %s", err)
 		os.Exit(1)
 	}
+
+	// output the deploymentname
+	github.SetOutput("deploymentName", *resultDeployment.Name)
 }

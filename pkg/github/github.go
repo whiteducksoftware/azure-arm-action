@@ -17,6 +17,7 @@ package github
 
 import "fmt"
 
+// SetOutput can be used to set outputs of your action
 func SetOutput(name string, value string) {
 	fmt.Printf("::set-output name=%s::%s", name, value)
 }

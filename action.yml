@@ -3,7 +3,7 @@ name: "Azure Resource Manager (ARM) Template Deployment"
 description: "Use this GitHub Action task deploy an Azure Resource Manager (ARM) template"
 inputs:
   creds:
-    description: 'Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS'
+    description: "Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS"
     required: true
   subscriptionId:
     description: "Provide the subscription id."
@@ -24,6 +24,9 @@ inputs:
   parametersLocation:
     description: "Specify the path to the Azure Resource Manager parameters file."
     required: false
+outputs:
+  deploymentName:
+    description: "The generated deployment name"
 branding:
   color: orange
   icon: package

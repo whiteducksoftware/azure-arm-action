@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
@@ -27,30 +28,32 @@ import (
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
-func Deploy(ctx context.Context, inputs github.Inputs) error {
+// Deploy takes our inputs and initaite and
+// waits for completion of the arm template deployment
+func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExtended, error) {
 	sp, err := azure.GetServicePrincipal(inputs)
 	if err != nil {
-		return err
+		return resources.DeploymentExtended{}, err
 	}
 
 	// Load template and parameters if set
 	template, err := util.ReadJSON(inputs.TemplateLocation)
 	if err != nil {
-		return err
+		return resources.DeploymentExtended{}, err
 	}
 
 	var parameters *map[string]interface{}
 	if inputs.ParametersLocation != "" {
 		parameters, err = util.ReadJSON(inputs.ParametersLocation)
 		if err != nil {
-			return err
+			return resources.DeploymentExtended{}, err
 		}
 	}
 
 	// Load authorizer from the service principal
 	authorizer, err := azure.GetArmAuthorizerFromServicePrincipal(sp)
 	if err != nil {
-		return err
+		return resources.DeploymentExtended{}, err
 	}
 
 	// Load the arm deployments client
@@ -61,11 +64,11 @@ func Deploy(ctx context.Context, inputs github.Inputs) error {
 	logrus.Infof("Validating deployment %s, mode: %s", inputs.DeploymentName, inputs.DeploymentMode)
 	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, template, parameters)
 	if err != nil {
-		return err
+		return resources.DeploymentExtended{}, err
 	}
 
 	if validationResult.StatusCode != http.StatusOK {
-		return fmt.Errorf("Template validation failed, %s", validationResult.Status)
+		return resources.DeploymentExtended{}, fmt.Errorf("Template validation failed, %s", validationResult.Status)
 	}
 	logrus.Info("Validation finished.")
 
@@ -73,12 +76,12 @@ func Deploy(ctx context.Context, inputs github.Inputs) error {
 	logrus.Infof("Creating deployment %s", inputs.DeploymentName)
 	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, template, parameters)
 	if err != nil {
-		return err
+		return resources.DeploymentExtended{}, err
 	}
 	if resultDeployment.StatusCode != http.StatusOK {
-		return fmt.Errorf("Template deployment failed, %s", resultDeployment.Status)
+		return resources.DeploymentExtended{}, fmt.Errorf("Template deployment failed, %s", resultDeployment.Status)
 	}
 	logrus.Info("Template deployment finished.")
 
-	return nil
+	return resultDeployment, nil
 }

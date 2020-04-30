@@ -22,6 +22,7 @@ import (
 	"github.com/caarlos0/env"
 )
 
+// GitHub represents the inputs which github provides us on default
 type GitHub struct {
 	Workflow   string `env:"GITHUB_WORKFLOW"`
 	Action     string `env:"GITHUB_ACTION"`
@@ -33,6 +34,7 @@ type GitHub struct {
 	Ref        string `env:"GITHUB_REF"`
 }
 
+// Inputs represents our custom inputs for the action
 type Inputs struct {
 	Credentials        string        `env:"INPUT_CREDS"`
 	SubscriptionID     string        `env:"INPUT_SUBSCRIPTIONID"`
@@ -44,11 +46,13 @@ type Inputs struct {
 	Timeout            time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
+// Options is a combined struct of all inputs
 type Options struct {
 	GitHub GitHub
 	Inputs Inputs
 }
 
+// LoadOptions parses the environment vars and reads github options and our custom inputs
 func LoadOptions() (*Options, error) {
 	github := GitHub{}
 	if err := env.Parse(&github); err != nil {
