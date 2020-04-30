@@ -88,12 +88,27 @@ func GetDeploymentsClient(subscriptionId string, authorizer autorest.Authorizer)
 	return deployClient
 }
 
+// ValidateDeployment validates the template deployments and their
+// parameters are correct and will produce a successful deployment.GetResource
+func ValidateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName, deploymentName string, deploymentMode string, template, params *map[string]interface{}) (valid resources.DeploymentValidateResult, err error) {
+	return deployClient.Validate(ctx,
+		resourceGroupName,
+		deploymentName,
+		resources.Deployment{
+			Properties: &resources.DeploymentProperties{
+				Template:   template,
+				Parameters: params,
+				Mode:       resources.DeploymentMode(deploymentMode),
+			},
+		})
+}
+
 // CreateDeployment creates a template deployment using the
 // referenced JSON files for the template and its parameters
 func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName string, deploymentName string, deploymentMode string, template, params *map[string]interface{}) (de resources.DeploymentExtended, err error) {
 	future, err := deployClient.CreateOrUpdate(
 		ctx,
-		deploymentName,
+		resourceGroupName,
 		deploymentName,
 		resources.Deployment{
 			Properties: &resources.DeploymentProperties{

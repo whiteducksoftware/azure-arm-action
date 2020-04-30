@@ -16,6 +16,11 @@ limitations under the License.
 package deploy
 
 import (
+	"fmt"
+	"net/http"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
@@ -63,10 +68,14 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			return err
 		}
+		deploymentName = fmt.Sprintf("%s-%s", deploymentName, uuid.New().String())
 
 		deploymentMode, err := flags.GetString(azure.DeploymentModeFlagName)
 		if err != nil {
 			return err
+		}
+		if deploymentMode == "" {
+			deploymentMode = "Incremental"
 		}
 
 		parametersLocation, err := flags.GetString(azure.ParametersLocationFlagName)
@@ -91,11 +100,28 @@ to quickly create a Cobra application.`,
 		// Load the arm deployments client
 		deploymentsClient := azure.GetDeploymentsClient(subscriptionID, authorizer)
 
-		// Create and wait for completion of the deployment
-		_, err = azure.CreateDeployment(cmd.Context(), deploymentsClient, resourceGroupName, deploymentName, deploymentMode, template, parameters)
+		// Validate deployment
+		logrus.Infof("Validating deployment %s, mode: %s", deploymentName, deploymentMode)
+		validationResult, err := azure.ValidateDeployment(cmd.Context(), deploymentsClient, resourceGroupName, deploymentName, deploymentMode, template, parameters)
 		if err != nil {
 			return err
 		}
+
+		if validationResult.StatusCode != http.StatusOK {
+			return fmt.Errorf("Template validation failed, %s", validationResult.Status)
+		}
+		logrus.Info("Validation finished.")
+
+		// Create and wait for completion of the deployment
+		logrus.Infof("Creating deployment %s", deploymentName)
+		resultDeployment, err := azure.CreateDeployment(cmd.Context(), deploymentsClient, resourceGroupName, deploymentName, deploymentMode, template, parameters)
+		if err != nil {
+			return err
+		}
+		if resultDeployment.StatusCode != http.StatusOK {
+			return fmt.Errorf("Template deployment failed, %s", resultDeployment.Status)
+		}
+		logrus.Info("Template deployment finished.")
 
 		return nil
 	},
