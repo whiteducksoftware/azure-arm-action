@@ -25,7 +25,7 @@ import (
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/spf13/pflag"
+	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 )
 
 // Flag name constants
@@ -47,16 +47,11 @@ type ServicePrincipal struct {
 }
 
 // GetServicePrincipalFromFlags builds from the cmd flags a ServicePrincipal
-func GetServicePrincipal(flags *pflag.FlagSet) (*ServicePrincipal, error) {
-	credentials, err := flags.GetString(CredentialsFlagName)
-	if err != nil {
-		return nil, err
-	}
-
+func GetServicePrincipal(inputs github.Inputs) (*ServicePrincipal, error) {
 	var sp ServicePrincipal
-	err = json.Unmarshal([]byte(credentials), &sp)
+	err := json.Unmarshal([]byte(inputs.Credentials), &sp)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to parse the credentials passed:\n\tMarshal Error: %s", err)
+		return nil, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
 	}
 
 	return &sp, nil

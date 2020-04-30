@@ -13,31 +13,10 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-package main
+package github
 
-import (
-	"context"
+import "fmt"
 
-	"github.com/sirupsen/logrus"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
-)
-
-func main() {
-	opts, err := github.LoadOptions()
-	if err != nil {
-		logrus.Errorf("failed to load options: %s", err)
-		return
-	}
-
-	// read inptus
-	inputs := opts.Inputs
-	ctx, _ := context.WithTimeout(context.Background(), inputs.Timeout)
-
-	// deploy the template
-	err = actions.Deploy(ctx, inputs)
-	if err != nil {
-		logrus.Errorf("failed to load options: %s", err)
-		return
-	}
+func SetOutput(name string, value string) {
+	fmt.Printf("::set-output name=%s::%s", name, value)
 }

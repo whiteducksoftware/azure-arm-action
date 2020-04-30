@@ -29,22 +29,4 @@ branding:
   icon: package
 runs:
   using: 'docker'
-  image: 'docker://whiteduck/azure-arm-action:v1'
-  args:
-    - deploy 
-    - -v 
-    - info
-    - --credentials 
-    - ${{ inputs.creds }}
-    - --subscriptionId
-    - ${{ inputs.subscriptionId }}
-    - --resourceGroupName
-    - ${{ inputs.resourceGroupName }}
-    - --templateLocation
-    - ${{ inputs.templateLocation }}
-    - --deploymentMode
-    - ${{ inputs.deploymentMode }}
-    - --deploymentName
-    - ${{ inputs.deploymentName }}
-    - --parametersLocation
-    - ${{ inputs.parametersLocation }}
+  image: 'docker://whiteduck/azure-arm-action:v2'
