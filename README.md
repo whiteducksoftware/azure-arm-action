@@ -21,7 +21,7 @@ A GitHub Action to deploy ARM templates.
   
 * `deploymentName` Specifies the name of the resource group deployment to create.
 
-* `parameters` Specify the path to the Azure Resource Manager parameters file.
+* `parametersLocation` Specify the path to the Azure Resource Manager parameters file.
 
 ## Usage
 
@@ -49,5 +49,5 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: github-action-arm-rg
         templateLocation: ./azuredeploy.json
-        parameters: <path/to/parameters.json>
+        parametersLocation: <path/to/parameters.json>
 ```
