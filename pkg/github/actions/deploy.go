@@ -34,7 +34,6 @@ func Deploy(ctx context.Context, inputs github.Inputs) error {
 	}
 
 	// Load template and parameters if set
-	logrus.Info(inputs.TemplateLocation)
 	template, err := util.ReadJSON(inputs.TemplateLocation)
 	if err != nil {
 		return err

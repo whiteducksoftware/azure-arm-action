@@ -17,6 +17,7 @@ package main
 
 import (
 	"context"
+	"os"
 
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
@@ -27,7 +28,7 @@ func main() {
 	opts, err := github.LoadOptions()
 	if err != nil {
 		logrus.Errorf("failed to load options: %s", err)
-		return
+		os.Exit(1)
 	}
 
 	// read inptus
@@ -38,6 +39,6 @@ func main() {
 	err = actions.Deploy(ctx, inputs)
 	if err != nil {
 		logrus.Errorf("failed to load options: %s", err)
-		return
+		os.Exit(1)
 	}
 }

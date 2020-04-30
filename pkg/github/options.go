@@ -41,7 +41,7 @@ type Inputs struct {
 	ResourceGroupName string        `env:"INPUT_RESOURCEGROUPNAME"`
 	DeploymentName    string        `env:"INPUT_DEPLOYMENTNAME"`
 	DeploymentMode    string        `env:"INPUT_DEPLOYMENTMODE"`
-	Timeout           time.Duration `env:"INPUT_TIMEOUT" envDefault:"60s"`
+	Timeout           time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
 type Options struct {
