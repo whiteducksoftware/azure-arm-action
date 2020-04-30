@@ -41,7 +41,7 @@ runs:
     - --resourceGroupName
     - ${{ inputs.resourceGroupName }}
     - --templateLocation
-    - ${{ inputs.resourceGroupName }}
+    - ${{ inputs.templateLocation }}
     - --deploymentMode
     - ${{ inputs.deploymentMode }}
     - --deploymentName
