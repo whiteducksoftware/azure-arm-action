@@ -38,10 +38,12 @@ func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExte
 
 	// Load the arm deployments client
 	deploymentsClient := azure.GetDeploymentsClient(inputs.SubscriptionID, authorizer)
-	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid.New().String())
+	uuid := uuid.New().String()
+	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, uuid, inputs.DeploymentName, uuid, inputs.DeploymentMode)
+	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid)
 
 	// Validate deployment
-	logrus.Infof("Validating deployment %s, mode: %s", inputs.DeploymentName, inputs.DeploymentMode)
+	logrus.Infof("Validating deployment %s", inputs.DeploymentName)
 	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, inputs.Parameters)
 	if err != nil {
 		return resources.DeploymentExtended{}, err

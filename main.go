@@ -18,6 +18,7 @@ package main
 import (
 	"context"
 	"os"
+	"os/signal"
 
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
@@ -34,7 +35,7 @@ func main() {
 	// read inptus
 	inputs := opts.Inputs
 	ctx, cancel := context.WithTimeout(context.Background(), inputs.Timeout)
-	defer cancel()
+	setupInterruptHandler(cancel)
 
 	// deploy the template
 	resultDeployment, err := actions.Deploy(ctx, inputs)
@@ -45,4 +46,15 @@ func main() {
 
 	// output the deploymentname
 	github.SetOutput("deploymentName", *resultDeployment.Name)
+}
+
+func setupInterruptHandler(cancel func()) {
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	go func() {
+		<-c // wait for the signal
+		logrus.Info("Received interrupt, exiting now...")
+		cancel()
+		os.Exit(1)
+	}()
 }
