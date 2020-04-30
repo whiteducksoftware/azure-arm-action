@@ -27,14 +27,15 @@ import (
 
 // GitHub represents the inputs which github provides us on default
 type GitHub struct {
-	Workflow   string `env:"GITHUB_WORKFLOW"`
-	Action     string `env:"GITHUB_ACTION"`
-	Actor      string `env:"GITHUB_ACTOR"`
-	Repository string `env:"GITHUB_REPOSITORY"`
-	Commit     string `env:"GITHUB_SHA"`
-	EventName  string `env:"GITHUB_EVENT_NAME"`
-	EventPath  string `env:"GITHUB_EVENT_PATH"`
-	Ref        string `env:"GITHUB_REF"`
+	Workflow        string `env:"GITHUB_WORKFLOW"`
+	Action          string `env:"GITHUB_ACTION"`
+	Actor           string `env:"GITHUB_ACTOR"`
+	Repository      string `env:"GITHUB_REPOSITORY"`
+	Commit          string `env:"GITHUB_SHA"`
+	EventName       string `env:"GITHUB_EVENT_NAME"`
+	EventPath       string `env:"GITHUB_EVENT_PATH"`
+	Ref             string `env:"GITHUB_REF"`
+	RunningAsAction bool   `env:"GITHUB_ACTIONS" envDefault:"false"`
 }
 
 // Inputs represents our custom inputs for the action

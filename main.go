@@ -37,6 +37,12 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), inputs.Timeout)
 	setupInterruptHandler(cancel)
 
+	// Output some information
+	githubOptions := opts.GitHub
+	if githubOptions.RunningAsAction {
+		logrus.Infof("==== Running workflow %s for %s@%s ====", githubOptions.Workflow, githubOptions.Ref, githubOptions.Commit)
+	}
+
 	// deploy the template
 	resultDeployment, err := actions.Deploy(ctx, inputs)
 	if err != nil {
@@ -46,6 +52,9 @@ func main() {
 
 	// output the deploymentname
 	github.SetOutput("deploymentName", *resultDeployment.Name)
+	if githubOptions.RunningAsAction {
+		logrus.Info("==== Successfully finished running the workflow ====")
+	}
 }
 
 func setupInterruptHandler(cancel func()) {
