@@ -33,7 +33,7 @@ runs:
   args:
     - deploy 
     - -v 
-    - debug 
+    - infos 
     - --credentials 
     - ${{ inputs.creds }}
     - --subscriptionId

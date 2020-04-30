@@ -12,3 +12,9 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@master
+      - name: build
+        id: build
+        uses: docker/build-action@v1
+        with:
+          repository: whiteduck/azure-arm-action
+          tags: latest
