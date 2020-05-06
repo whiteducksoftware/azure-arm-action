@@ -1,17 +1,7 @@
 /*
-Copyright © 2020 Stefan Kürzeder <stefan.kuerzeder@whiteduck.de>
+Copyright (c) 2020 white duck Gesellschaft für Softwareentwicklung mbH
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+This code is licensed under MIT license (see LICENSE for details)
 */
 package azure
 
@@ -30,7 +20,7 @@ import (
 // Flag name constants
 const (
 	CredentialsFlagName        string = "credentials"
-	SubscriptionIdFlagName     string = "subscriptionId"
+	SubscriptionIDFlagName     string = "subscriptionId"
 	ResourceGroupNameFlagName  string = "resourceGroupName"
 	TemplateLocationFlagName   string = "templateLocation"
 	DeploymentModeFlagName     string = "deploymentMode"
@@ -45,7 +35,7 @@ type ServicePrincipal struct {
 	Password string
 }
 
-// GetServicePrincipalFromFlags builds from the cmd flags a ServicePrincipal
+// GetServicePrincipal builds from the cmd flags a ServicePrincipal
 func GetServicePrincipal(credentials string) (ServicePrincipal, error) {
 	var sp ServicePrincipal
 	err := json.Unmarshal([]byte(credentials), &sp)
@@ -57,7 +47,7 @@ func GetServicePrincipal(credentials string) (ServicePrincipal, error) {
 }
 
 // GetArmAuthorizerFromServicePrincipal creates an ARM authorizer from an Sp
-func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.BearerAuthorizer, error) {
+func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.Authorizer, error) {
 	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, sp.Tenant)
 	if err != nil {
 		return nil, err
@@ -68,17 +58,33 @@ func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.Bearer
 		return nil, err
 	}
 
-	return autorest.NewBearerAuthorizer(token), nil
+	// Create authorizer from the bearer token
+	var authorizer autorest.Authorizer
+	authorizer = autorest.NewBearerAuthorizer(token)
+
+	return &authorizer, nil
 }
 
-// GetArmAuthorizerFromMSI creates an ARM authorizer from a MSI (AAD Pod Identity)
-func GetArmAuthorizerFromMSI() (autorest.Authorizer, error) {
-	return auth.NewAuthorizerFromEnvironment()
+// GetArmAuthorizerFromEnvironment creates an ARM authorizer from a MSI (AAD Pod Identity)
+func GetArmAuthorizerFromEnvironment() (*autorest.Authorizer, error) {
+	var authorizer autorest.Authorizer
+	authorizer, err := auth.NewAuthorizerFromEnvironment()
+
+	return &authorizer, err
 }
 
-func GetDeploymentsClient(subscriptionId string, authorizer autorest.Authorizer) resources.DeploymentsClient {
-	deployClient := resources.NewDeploymentsClient(subscriptionId)
-	deployClient.Authorizer = authorizer
+// GetArmAuthorizerFromCLI creates an ARM authorizer from the local azure cli
+func GetArmAuthorizerFromCLI() (*autorest.Authorizer, error) {
+	var authorizer autorest.Authorizer
+	authorizer, err := auth.NewAuthorizerFromCLI()
+
+	return &authorizer, err
+}
+
+// GetDeploymentsClient takes the azure authorizer and creates an ARM deployments client on the desired subscription
+func GetDeploymentsClient(subscriptionID string, authorizer *autorest.Authorizer) resources.DeploymentsClient {
+	deployClient := resources.NewDeploymentsClient(subscriptionID)
+	deployClient.Authorizer = *authorizer
 	return deployClient
 }
 

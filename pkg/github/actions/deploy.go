@@ -1,17 +1,7 @@
 /*
-Copyright © 2020 Stefan Kürzeder <stefan.kuerzeder@whiteduck.de>
+Copyright (c) 2020 white duck Gesellschaft für Softwareentwicklung mbH
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+This code is licensed under MIT license (see LICENSE for details)
 */
 package actions
 
@@ -21,6 +11,7 @@ import (
 	"net/http"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
+	"github.com/Azure/go-autorest/autorest"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
@@ -29,13 +20,7 @@ import (
 
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
-func Deploy(ctx context.Context, inputs github.Inputs) (resources.DeploymentExtended, error) {
-	// Load authorizer from the service principal
-	authorizer, err := azure.GetArmAuthorizerFromServicePrincipal(inputs.Credentials)
-	if err != nil {
-		return resources.DeploymentExtended{}, err
-	}
-
+func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Authorizer) (resources.DeploymentExtended, error) {
 	// Load the arm deployments client
 	deploymentsClient := azure.GetDeploymentsClient(inputs.SubscriptionID, authorizer)
 	uuid := uuid.New().String()
