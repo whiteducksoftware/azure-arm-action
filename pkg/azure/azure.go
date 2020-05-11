@@ -30,10 +30,10 @@ const (
 
 // ServicePrincipal represents Azure Sp
 type ServicePrincipal struct {
-	ClientID       string
-	ClientSecret   string
-	SubscriptionID string
-	TenantID       string
+	ClientID       string `json:"clientId"`
+	ClientSecret   string `json:"clientSecret"`
+	SubscriptionID string `json:"subscriptionId"`
+	TenantID       string `json:"tenantId"`
 }
 
 // GetServicePrincipal builds from the cmd flags a ServicePrincipal
