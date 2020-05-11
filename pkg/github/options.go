@@ -31,7 +31,6 @@ type GitHub struct {
 // Inputs represents our custom inputs for the action
 type Inputs struct {
 	Credentials       azure.ServicePrincipal `env:"INPUT_CREDS"`
-	SubscriptionID    string                 `env:"INPUT_SUBSCRIPTIONID"`
 	Template          map[string]interface{} `env:"INPUT_TEMPLATELOCATION"`
 	Parameters        map[string]interface{} `env:"INPUT_PARAMERTERSLOCATION"`
 	ResourceGroupName string                 `env:"INPUT_RESOURCEGROUPNAME"`

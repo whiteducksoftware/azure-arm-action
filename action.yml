@@ -5,9 +5,6 @@ inputs:
   creds:
     description: "Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS"
     required: true
-  subscriptionId:
-    description: "Provide the subscription id."
-    required: true
   resourceGroupName:
     description: "Provide the name of a resource group."
     required: true

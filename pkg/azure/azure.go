@@ -30,9 +30,10 @@ const (
 
 // ServicePrincipal represents Azure Sp
 type ServicePrincipal struct {
-	Tenant   string
-	AppID    string
-	Password string
+	ClientID       string
+	ClientSecret   string
+	SubscriptionID string
+	TenantID       string
 }
 
 // GetServicePrincipal builds from the cmd flags a ServicePrincipal
@@ -48,12 +49,12 @@ func GetServicePrincipal(credentials string) (ServicePrincipal, error) {
 
 // GetArmAuthorizerFromServicePrincipal creates an ARM authorizer from an Sp
 func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.Authorizer, error) {
-	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, sp.Tenant)
+	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, sp.TenantID)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := adal.NewServicePrincipalToken(*oauthconfig, sp.AppID, sp.Password, azure.PublicCloud.ResourceManagerEndpoint)
+	token, err := adal.NewServicePrincipalToken(*oauthconfig, sp.ClientID, sp.ClientSecret, azure.PublicCloud.ResourceManagerEndpoint)
 	if err != nil {
 		return nil, err
 	}

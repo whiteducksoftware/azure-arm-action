@@ -22,7 +22,7 @@ import (
 // waits for completion of the arm template deployment
 func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Authorizer) (resources.DeploymentExtended, error) {
 	// Load the arm deployments client
-	deploymentsClient := azure.GetDeploymentsClient(inputs.SubscriptionID, authorizer)
+	deploymentsClient := azure.GetDeploymentsClient(inputs.Credentials.SubscriptionID, authorizer)
 	uuid := uuid.New().String()
 	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, uuid, inputs.DeploymentName, uuid, inputs.DeploymentMode)
 	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid)

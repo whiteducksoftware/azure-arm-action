@@ -11,7 +11,7 @@ A GitHub Action to deploy ARM templates.
 
 ## Inputs
 
-* `creds` **Required** Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS
+* `creds` **Required** Paste output of `az ad sp create-for-rbac --sdk-auth` as value of secret variable: AZURE_CREDENTIALS
 
 * `resourceGroupName` **Required** Provide the name of a resource group.
 
