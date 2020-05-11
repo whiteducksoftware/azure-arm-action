@@ -30,7 +30,7 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials       azure.ServicePrincipal `env:"INPUT_CREDS"`
+	Credentials       azure.SDKAuth          `env:"INPUT_CREDS"`
 	Template          map[string]interface{} `env:"INPUT_TEMPLATELOCATION"`
 	Parameters        map[string]interface{} `env:"INPUT_PARAMERTERSLOCATION"`
 	ResourceGroupName string                 `env:"INPUT_RESOURCEGROUPNAME"`
@@ -66,7 +66,7 @@ func LoadOptions() (*Options, error) {
 
 // custom type parser
 var customTypeParser = map[reflect.Type]env.ParserFunc{
-	reflect.TypeOf(azure.ServicePrincipal{}): wrapGetServicePrincipal,
+	reflect.TypeOf(azure.SDKAuth{}):          wrapGetServicePrincipal,
 	reflect.TypeOf(map[string]interface{}{}): wrapReadJSON,
 }
 

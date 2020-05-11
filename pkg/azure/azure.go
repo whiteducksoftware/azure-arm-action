@@ -9,6 +9,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/azure-sdk-for-go/services/keyvault/auth"
@@ -17,44 +19,34 @@ import (
 	"github.com/Azure/go-autorest/autorest/azure"
 )
 
-// Flag name constants
-const (
-	CredentialsFlagName        string = "credentials"
-	SubscriptionIDFlagName     string = "subscriptionId"
-	ResourceGroupNameFlagName  string = "resourceGroupName"
-	TemplateLocationFlagName   string = "templateLocation"
-	DeploymentModeFlagName     string = "deploymentMode"
-	DeploymentNameFlagName     string = "deploymentName"
-	ParametersLocationFlagName string = "parametersLocation"
-)
-
-// ServicePrincipal represents Azure Sp
-type ServicePrincipal struct {
+// SDKAuth represents Azure Sp
+type SDKAuth struct {
 	ClientID       string `json:"clientId"`
 	ClientSecret   string `json:"clientSecret"`
 	SubscriptionID string `json:"subscriptionId"`
 	TenantID       string `json:"tenantId"`
+	ARMEndpointURL string `json:"resourceManagerEndpointUrl"`
 }
 
 // GetServicePrincipal builds from the cmd flags a ServicePrincipal
-func GetServicePrincipal(credentials string) (ServicePrincipal, error) {
-	var sp ServicePrincipal
+func GetServicePrincipal(credentials string) (SDKAuth, error) {
+	var sp SDKAuth
 	err := json.Unmarshal([]byte(credentials), &sp)
 	if err != nil {
-		return ServicePrincipal{}, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
+		return SDKAuth{}, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
 	}
 
 	return sp, nil
 }
 
-// GetArmAuthorizerFromServicePrincipal creates an ARM authorizer from an Sp
-func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.Authorizer, error) {
-	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, sp.TenantID)
+// GetArmAuthorizerFromSdkAuth creates an ARM authorizer from an Sp
+func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (*autorest.Authorizer, error) {
+	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, auth.TenantID)
 	if err != nil {
 		return nil, err
 	}
 
-	token, err := adal.NewServicePrincipalToken(*oauthconfig, sp.ClientID, sp.ClientSecret, azure.PublicCloud.ResourceManagerEndpoint)
+	token, err := adal.NewServicePrincipalToken(*oauthconfig, auth.ClientID, auth.ClientSecret, auth.ARMEndpointURL)
 	if err != nil {
 		return nil, err
 	}
@@ -64,6 +56,44 @@ func GetArmAuthorizerFromServicePrincipal(sp ServicePrincipal) (*autorest.Author
 	authorizer = autorest.NewBearerAuthorizer(token)
 
 	return &authorizer, nil
+}
+
+// GetArmAuthorizerFromSdkAuthJSON creats am ARM authorizer from the passed sdk auth file
+func GetArmAuthorizerFromSdkAuthJSON(path string) (*autorest.Authorizer, error) {
+	var authorizer autorest.Authorizer
+
+	// Manipulate the AZURE_AUTH_LOCATION var at runtime
+	os.Setenv("AZURE_AUTH_LOCATION", path)
+	defer os.Unsetenv("AZURE_AUTH_LOCATION")
+
+	authorizer, err := auth.NewAuthorizerFromFile(azure.PublicCloud.ResourceManagerEndpoint)
+	return &authorizer, err
+}
+
+// GetArmAuthorizerFromSdkAuthJSONString creates an ARM authorizer from the sdk auth credentials
+func GetArmAuthorizerFromSdkAuthJSONString(credentials string) (*autorest.Authorizer, error) {
+	var authorizer autorest.Authorizer
+
+	// create a temporary file, as the sdk credentials need to be read from a file
+	tmpFile, err := ioutil.TempFile(os.TempDir(), "azure-sdk-auth-")
+	if err != nil {
+		return &authorizer, fmt.Errorf("Cannot create temporary sdk auth file: %s", err)
+	}
+	defer os.Remove(tmpFile.Name())
+
+	text := []byte(credentials)
+	if _, err = tmpFile.Write(text); err != nil {
+		return &authorizer, fmt.Errorf("Failed to write to temporary sdk auth file: %s", err)
+	}
+	tmpFile.Close()
+
+	// Manipulate the AZURE_AUTH_LOCATION var at runtime
+	os.Setenv("AZURE_AUTH_LOCATION", tmpFile.Name())
+	defer os.Unsetenv("AZURE_AUTH_LOCATION")
+
+	authorizer, err = auth.NewAuthorizerFromFile(azure.PublicCloud.ResourceManagerEndpoint)
+
+	return &authorizer, err
 }
 
 // GetArmAuthorizerFromEnvironment creates an ARM authorizer from a MSI (AAD Pod Identity)
