@@ -28,15 +28,15 @@ type SDKAuth struct {
 	ARMEndpointURL string `json:"resourceManagerEndpointUrl"`
 }
 
-// GetServicePrincipal builds from the cmd flags a ServicePrincipal
-func GetServicePrincipal(credentials string) (SDKAuth, error) {
-	var sp SDKAuth
-	err := json.Unmarshal([]byte(credentials), &sp)
+// GetSdkAuthFromString builds from the cmd flags a ServicePrincipal
+func GetSdkAuthFromString(credentials string) (SDKAuth, error) {
+	var auth SDKAuth
+	err := json.Unmarshal([]byte(credentials), &auth)
 	if err != nil {
 		return SDKAuth{}, fmt.Errorf("failed to parse the credentials passed, marshal error: %s", err)
 	}
 
-	return sp, nil
+	return auth, nil
 }
 
 // GetArmAuthorizerFromSdkAuth creates an ARM authorizer from an Sp

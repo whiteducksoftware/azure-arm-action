@@ -71,7 +71,7 @@ var customTypeParser = map[reflect.Type]env.ParserFunc{
 }
 
 func wrapGetServicePrincipal(v string) (interface{}, error) {
-	return azure.GetServicePrincipal(v)
+	return azure.GetSdkAuthFromString(v)
 }
 
 func wrapReadJSON(v string) (interface{}, error) {
