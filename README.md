@@ -35,7 +35,7 @@ A GitHub Action to deploy ARM templates.
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
     templateLocation: <path/to/azuredeploy.json>
-    deploymentName: github-test
+    deploymentName: <Deployment base name>
 ```
 
 ## Example
@@ -52,8 +52,8 @@ jobs:
     - uses: whiteducksoftware/azure-arm-action@v2.2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        resourceGroupName: github-action-arm-rg
-        templateLocation: ./azuredeploy.json
+        resourceGroupName: <YourResourceGroup>
+        templateLocation: <path/to/azuredeploy.json>
         parametersLocation: <path/to/parameters.json>
-        deploymentName: github-test
+        deploymentName: <Deployment base name>
 ```
