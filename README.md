@@ -10,18 +10,25 @@ A GitHub Action to deploy ARM templates.
 * [Checkout](https://github.com/actions/checkout) To checks-out your repository so the workflow can access any specified ARM template.
 
 ## Inputs
+* `creds` **Required**   
+    [Create Service Principal for Authentication](#Create-Service-Principal-for-Authentication)    
 
-* `creds` **Required** Paste output of `az ad sp create-for-rbac --sdk-auth` as value of secret variable: AZURE_CREDENTIALS
+* `resourceGroupName` **Required**   
+    Provide the name of a resource group.
 
-* `resourceGroupName` **Required** Provide the name of a resource group.
+* `templateLocation` **Required**  
+    Specify the path to the Azure Resource Manager template.  
+(See [assets/json/template.json](assets/json/template.json))
 
-* `templateLocation` **Required** Specify the path to the Azure Resource Manager template.
-
-* `deploymentMode` Incremental (only add resources to resource group) or Complete (remove extra resources from resource group). Default: `Incremental`.
+* `deploymentMode`   
+    Incremental (only add resources to resource group) or Complete (remove extra resources from resource group). Default: `Incremental`.
   
-* `deploymentName` **Required** Specifies the name of the resource group deployment to create.
+* `deploymentName`  
+    Specifies the name of the resource group deployment to create.
 
-* `parametersLocation` Specify the path to the Azure Resource Manager parameters file.
+* `parametersLocation`   
+    Specify the path to the Azure Resource Manager parameters file.  
+    (See [assets/json/serviceprincipal.json](assets/json/parameters.json))
 
 ## Outputs
 
