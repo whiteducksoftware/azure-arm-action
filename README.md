@@ -30,7 +30,7 @@ A GitHub Action to deploy ARM templates.
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v2
+- uses: whiteducksoftware/azure-arm-action@v2.2
   with:
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: whiteducksoftware/azure-arm-action@v2
+    - uses: whiteducksoftware/azure-arm-action@v2.2
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: github-action-arm-rg
