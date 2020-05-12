@@ -12,7 +12,6 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
-            subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
             resourceGroupName: azurearmaction
             templateLocation: ./test/template.json
             deploymentName: github-test

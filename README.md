@@ -19,7 +19,7 @@ A GitHub Action to deploy ARM templates.
 
 * `deploymentMode` Incremental (only add resources to resource group) or Complete (remove extra resources from resource group). Default: `Incremental`.
   
-* `deploymentName` Specifies the name of the resource group deployment to create.
+* `deploymentName` **Required** Specifies the name of the resource group deployment to create.
 
 * `parametersLocation` Specify the path to the Azure Resource Manager parameters file.
 
@@ -35,6 +35,7 @@ A GitHub Action to deploy ARM templates.
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
     templateLocation: <path/to/azuredeploy.json>
+    deploymentName: github-test
 ```
 
 ## Example
@@ -54,4 +55,5 @@ jobs:
         resourceGroupName: github-action-arm-rg
         templateLocation: ./azuredeploy.json
         parametersLocation: <path/to/parameters.json>
+        deploymentName: github-test
 ```
