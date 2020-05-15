@@ -35,7 +35,7 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 	}
 
 	if validationResult.StatusCode != http.StatusOK {
-		return resources.DeploymentExtended{}, fmt.Errorf("Template validation failed, %s", validationResult.Status)
+		return resources.DeploymentExtended{}, fmt.Errorf("Template validation failed, %s, %s", validationResult.Status, *validationResult.Error.Message)
 	}
 	logrus.Info("Validation finished.")
 
