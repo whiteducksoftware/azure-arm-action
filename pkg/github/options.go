@@ -15,6 +15,10 @@ import (
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
+// Wrapper types to define how we need to parse the input json
+type template map[string]interface{}
+type parameters map[string]interface{}
+
 // GitHub represents the inputs which github provides us on default
 type GitHub struct {
 	Workflow        string `env:"GITHUB_WORKFLOW"`
@@ -30,13 +34,13 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials       azure.SDKAuth          `env:"INPUT_CREDS"`
-	Template          map[string]interface{} `env:"INPUT_TEMPLATELOCATION"`
-	Parameters        map[string]interface{} `env:"INPUT_PARAMERTERSLOCATION"`
-	ResourceGroupName string                 `env:"INPUT_RESOURCEGROUPNAME"`
-	DeploymentName    string                 `env:"INPUT_DEPLOYMENTNAME"`
-	DeploymentMode    string                 `env:"INPUT_DEPLOYMENTMODE"`
-	Timeout           time.Duration          `env:"INPUT_TIMEOUT" envDefault:"20m"`
+	Credentials       azure.SDKAuth `env:"INPUT_CREDS"`
+	Template          template      `env:"INPUT_TEMPLATELOCATION"`
+	Parameters        parameters    `env:"INPUT_PARAMERTERSLOCATION"`
+	ResourceGroupName string        `env:"INPUT_RESOURCEGROUPNAME"`
+	DeploymentName    string        `env:"INPUT_DEPLOYMENTNAME"`
+	DeploymentMode    string        `env:"INPUT_DEPLOYMENTMODE"`
+	Timeout           time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
 // Options is a combined struct of all inputs
@@ -66,8 +70,9 @@ func LoadOptions() (*Options, error) {
 
 // custom type parser
 var customTypeParser = map[reflect.Type]env.ParserFunc{
-	reflect.TypeOf(azure.SDKAuth{}):          wrapGetServicePrincipal,
-	reflect.TypeOf(map[string]interface{}{}): wrapReadJSON,
+	reflect.TypeOf(azure.SDKAuth{}): wrapGetServicePrincipal,
+	reflect.TypeOf(template{}):      wrapReadJSON,
+	reflect.TypeOf(parameters{}):    wrapReadParamtersJSON,
 }
 
 func wrapGetServicePrincipal(v string) (interface{}, error) {
@@ -76,4 +81,19 @@ func wrapGetServicePrincipal(v string) (interface{}, error) {
 
 func wrapReadJSON(v string) (interface{}, error) {
 	return util.ReadJSON(v)
+}
+
+func wrapReadParamtersJSON(v string) (interface{}, error) {
+	json, err := util.ReadJSON(v)
+	if err != nil {
+		return json, err
+	}
+
+	// Check if the parameters are wrapped
+	paramters, ok := json["parameters"]
+	if ok {
+		return paramters, err
+	}
+
+	return json, err
 }
