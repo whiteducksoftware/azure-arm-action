@@ -17,7 +17,7 @@ import (
 
 func init() {
 	lvl, ok := os.LookupEnv("LOG_LEVEL")
-	// LOG_LEVEL not set, let's default to debug
+	// LOG_LEVEL not set, let's default to info
 	if !ok {
 		lvl = "info"
 	}
