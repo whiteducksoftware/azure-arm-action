@@ -51,14 +51,14 @@ func main() {
 	// authenticate
 	authorizer, err := actions.Authenticate(inputs)
 	if err != nil {
-		logrus.Errorf("failed to authenticate with azure: %s", err)
+		logrus.Errorf("Failed to authenticate with azure: %s", err)
 		os.Exit(1)
 	}
 
 	// deploy the template
 	resultDeployment, err := actions.Deploy(ctx, inputs, authorizer)
 	if err != nil {
-		logrus.Errorf("failed to deploy the template: %s", err)
+		logrus.Errorf("Failed to deploy the template: %s", err)
 		os.Exit(1)
 	}
 
