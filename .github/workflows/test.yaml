@@ -14,5 +14,6 @@ jobs:
             creds: ${{ secrets.AZURE_CREDENTIALS }}
             resourceGroupName: azurearmaction
             templateLocation: ./test/template.json
+            parametersLocation: ./test/parameters.json
             deploymentName: github-test
             deploymentMode: Incremental
