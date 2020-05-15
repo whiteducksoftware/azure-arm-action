@@ -11,9 +11,12 @@ jobs:
       - name: ARM deployment test
         uses: ./ # Uses an action in the root directory
         with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-            resourceGroupName: azurearmaction
-            templateLocation: ./test/template.json
-            parametersLocation: ./test/parameters.json
-            deploymentName: github-test
-            deploymentMode: Incremental
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resourceGroupName: azurearmaction
+          templateLocation: ./test/template.json
+          parametersLocation: ./test/parameters.json
+          deploymentName: github-test
+          deploymentMode: Incremental
+        env:
+          LOG_LEVEL: DEBUG
+        

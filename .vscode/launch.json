@@ -16,7 +16,8 @@
                 "INPUT_PARAMETERSLOCATION": "${workspaceRoot}/test/parameters.json",
                 "INPUT_DEPLOYMENTNAME": "vscode-debug",
                 "INPUT_DEPLOYMENTMODE": "Incremental",
-                "INPUT_RESOURCEGROUPNAME": "azurearmaction"
+                "INPUT_RESOURCEGROUPNAME": "azurearmaction",
+                "LOG_LEVEL": "DEBUG"
             },
             "args": []
         }

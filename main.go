@@ -15,6 +15,21 @@ import (
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
 )
 
+func init() {
+	lvl, ok := os.LookupEnv("LOG_LEVEL")
+	// LOG_LEVEL not set, let's default to debug
+	if !ok {
+		lvl = "info"
+	}
+	// parse string, this is built-in feature of logrus
+	ll, err := logrus.ParseLevel(lvl)
+	if err != nil {
+		ll = logrus.InfoLevel
+	}
+	// set global log level
+	logrus.SetLevel(ll)
+}
+
 func main() {
 	opts, err := github.LoadOptions()
 	if err != nil {

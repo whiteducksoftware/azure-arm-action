@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/caarlos0/env"
+	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
@@ -80,10 +81,12 @@ func wrapGetServicePrincipal(v string) (interface{}, error) {
 }
 
 func wrapReadJSON(v string) (interface{}, error) {
+	logrus.Debugf("Parsing raw json %s", v)
 	return util.ReadJSON(v)
 }
 
 func wrapReadParamtersJSON(v string) (interface{}, error) {
+	logrus.Debugf("Parsing parameter json %s", v)
 	json, err := util.ReadJSON(v)
 	if err != nil {
 		return json, err
