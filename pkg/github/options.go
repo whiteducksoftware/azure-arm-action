@@ -36,7 +36,7 @@ type GitHub struct {
 type Inputs struct {
 	Credentials       azure.SDKAuth `env:"INPUT_CREDS"`
 	Template          template      `env:"INPUT_TEMPLATELOCATION"`
-	Parameters        parameters    `env:"INPUT_PARAMERTERSLOCATION"`
+	Parameters        parameters    `env:"INPUT_PARAMETERSLOCATION"`
 	ResourceGroupName string        `env:"INPUT_RESOURCEGROUPNAME"`
 	DeploymentName    string        `env:"INPUT_DEPLOYMENTNAME"`
 	DeploymentMode    string        `env:"INPUT_DEPLOYMENTMODE"`

@@ -13,7 +13,7 @@
             "env": {
                 //"HTTP_PROXY": "http://127.0.0.1:8080",
                 "INPUT_TEMPLATELOCATION": "${workspaceRoot}/test/template.json",
-                "INPUT_PARAMERTERSLOCATION": "${workspaceRoot}/test/parameters.json",
+                "INPUT_PARAMETERSLOCATION": "${workspaceRoot}/test/parameters.json",
                 "INPUT_DEPLOYMENTNAME": "vscode-debug",
                 "INPUT_DEPLOYMENTMODE": "Incremental",
                 "INPUT_RESOURCEGROUPNAME": "azurearmaction"
