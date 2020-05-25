@@ -32,13 +32,14 @@ A GitHub Action to deploy ARM templates.
     (See [assets/json/serviceprincipal.json](assets/json/parameters.json))
 
 ## Outputs
-
+Every template output will be exported as output. For example the output is called `containerName` then it will be available with `${{ steps.STEP.outputs.containerName }}`    
+Additionally are the following outputs available:
 * `deploymentName` Specifies the complete deployment name which has been generated
 
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v2.2
+- uses: whiteducksoftware/azure-arm-action@v2.3
   with:
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
@@ -57,7 +58,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: whiteducksoftware/azure-arm-action@v2.2
+    - uses: whiteducksoftware/azure-arm-action@v2.3
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
