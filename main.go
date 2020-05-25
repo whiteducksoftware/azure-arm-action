@@ -11,7 +11,6 @@ import (
 	"os/signal"
 
 	"github.com/sirupsen/logrus"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
 )
@@ -64,7 +63,7 @@ func main() {
 	}
 
 	// parse the template outputs
-	outputs, err := azure.ParseOutputs(resultDeployment.Properties.Outputs)
+	outputs, err := actions.ParseOutputs(resultDeployment.Properties.Outputs)
 	if err != nil {
 		logrus.Errorf("Failed to parse the template outputs: %s", err)
 		os.Exit(1)

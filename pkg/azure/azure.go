@@ -17,7 +17,6 @@ import (
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/mitchellh/mapstructure"
 )
 
 // SDKAuth represents Azure Sp
@@ -27,12 +26,6 @@ type SDKAuth struct {
 	SubscriptionID string `json:"subscriptionId"`
 	TenantID       string `json:"tenantId"`
 	ARMEndpointURL string `json:"resourceManagerEndpointUrl"`
-}
-
-// Output represents a single output of an ARM template
-type Output struct {
-	Type  string `json:"type"`
-	Value string `json:"value"`
 }
 
 // GetSdkAuthFromString builds from the cmd flags a ServicePrincipal
@@ -166,28 +159,4 @@ func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsCli
 	}
 
 	return future.Result(deployClient)
-}
-
-// ParseOutputs takes the raw outputs from the azure.DemploymentExtended object
-// and converts it to a string Output map
-func ParseOutputs(raw interface{}) (map[string]Output, error) {
-	if raw == nil {
-		return map[string]Output{}, nil
-	}
-
-	var outputs map[string]Output
-	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
-		Result:  &outputs,
-		TagName: "json",
-	})
-	if err != nil {
-		return map[string]Output{}, err
-	}
-
-	err = decoder.Decode(raw)
-	if err != nil {
-		return map[string]Output{}, err
-	}
-
-	return outputs, nil
 }
