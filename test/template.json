@@ -79,13 +79,13 @@
         }
     ],
     "outputs": {
-        "resourceID": {
+        "location": {
             "type": "string",
-            "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerName'))]"
+            "value": "[parameters('location')]"
         },
-        "resourceID2": {
+        "containerName": {
             "type": "string",
-            "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerName'))]"
+            "value": "[parameters('containerName')]"
         }
     }
 }
