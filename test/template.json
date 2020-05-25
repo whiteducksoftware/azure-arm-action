@@ -77,5 +77,15 @@
             },
             "tags": {}
         }
-    ]
+    ],
+    "outputs": {
+        "resourceID": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerName'))]"
+        },
+        "resourceID2": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerName'))]"
+        }
+    }
 }

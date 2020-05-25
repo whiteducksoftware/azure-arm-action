@@ -95,8 +95,8 @@ func wrapReadParamtersJSON(v string) (interface{}, error) {
 	// Check if the parameters are wrapped
 	paramters, ok := json["parameters"]
 	if ok {
-		return paramters, err
+		return paramters, nil
 	}
 
-	return json, err
+	return json, nil
 }

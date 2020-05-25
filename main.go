@@ -11,6 +11,7 @@ import (
 	"os/signal"
 
 	"github.com/sirupsen/logrus"
+	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
 )
@@ -62,8 +63,19 @@ func main() {
 		os.Exit(1)
 	}
 
-	// output the deploymentname
+	// parse the template outputs
+	outputs, err := azure.ParseOutputs(resultDeployment.Properties.Outputs)
+	if err != nil {
+		logrus.Errorf("Failed to parse the template outputs: %s", err)
+		os.Exit(1)
+	}
+
+	// write the outputs and the deploymentName to our outputs
 	github.SetOutput("deploymentName", *resultDeployment.Name)
+	for name, output := range outputs {
+		github.SetOutput(name, output.Value)
+	}
+
 	if githubOptions.RunningAsAction {
 		logrus.Info("==== Successfully finished running the workflow ====")
 	}
