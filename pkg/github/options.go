@@ -130,7 +130,6 @@ func wrapReadRawParameters(v string) (interface{}, error) {
 			return false
 		default:
 			return unicode.IsSpace(c)
-
 		}
 	}
 

@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@master
+        
       - uses: jerray/publish-docker-action@master
         with:
           username: ${{ secrets.DOCKER_USERNAME }}

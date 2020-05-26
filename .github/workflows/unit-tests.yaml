@@ -13,8 +13,10 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.14
+
       - name: Check out source code
         uses: actions/checkout@v1
+
       - name: Build
         env:
           GOPROXY: "https://proxy.golang.org"
@@ -22,6 +24,7 @@ jobs:
           GOOS: linux 
           GOARCH: amd64
         run: go build -a -installsuffix cgo -ldflags="-w -s" .
+        
       - name: Test
         env:
           GOPROXY: "https://proxy.golang.org"

@@ -44,7 +44,7 @@ Additionally are the following outputs available:
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v2.3
+- uses: whiteducksoftware/azure-arm-action@v3
   with:
     creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
@@ -56,14 +56,14 @@ Additionally are the following outputs available:
 
 ```yml
 on: [push]
-name: AzureLoginSample
+name: ARMActionSample
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: whiteducksoftware/azure-arm-action@v2.3
+    - uses: whiteducksoftware/azure-arm-action@v3
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
