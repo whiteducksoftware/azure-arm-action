@@ -66,7 +66,8 @@ func TestParseOutputs(t *testing.T) {
 		t.Errorf("Test key is missing in the outputs, exptected the key containerName to be present")
 	}
 
-	if value.Value != "github-action" {
-		t.Errorf("Got invalid value for location key, expected %s got %s", "github-action", value.Value)
+	// This also tests if the override did work
+	if value.Value != "github-action-overriden" {
+		t.Errorf("Got invalid value for location key, expected %s got %s", "github-action-overriden", value.Value)
 	}
 }

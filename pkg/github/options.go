@@ -8,7 +8,9 @@ package github
 import (
 	"fmt"
 	"reflect"
+	"strings"
 	"time"
+	"unicode"
 
 	"github.com/caarlos0/env"
 	"github.com/sirupsen/logrus"
@@ -35,13 +37,14 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials       azure.SDKAuth `env:"INPUT_CREDS"`
-	Template          template      `env:"INPUT_TEMPLATELOCATION"`
-	Parameters        parameters    `env:"INPUT_PARAMETERSLOCATION"`
-	ResourceGroupName string        `env:"INPUT_RESOURCEGROUPNAME"`
-	DeploymentName    string        `env:"INPUT_DEPLOYMENTNAME"`
-	DeploymentMode    string        `env:"INPUT_DEPLOYMENTMODE"`
-	Timeout           time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
+	Credentials        azure.SDKAuth `env:"INPUT_CREDS"`
+	Template           template      `env:"INPUT_TEMPLATELOCATION"`
+	Parameters         parameters    `env:"INPUT_PARAMETERS"`
+	OverrideParameters parameters    `env:"INPUT_OVERRIDEPARAMETERS"`
+	ResourceGroupName  string        `env:"INPUT_RESOURCEGROUPNAME"`
+	DeploymentName     string        `env:"INPUT_DEPLOYMENTNAME"`
+	DeploymentMode     string        `env:"INPUT_DEPLOYMENTMODE"`
+	Timeout            time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
 }
 
 // Options is a combined struct of all inputs
@@ -73,7 +76,7 @@ func LoadOptions() (*Options, error) {
 var customTypeParser = map[reflect.Type]env.ParserFunc{
 	reflect.TypeOf(azure.SDKAuth{}): wrapGetServicePrincipal,
 	reflect.TypeOf(template{}):      wrapReadJSON,
-	reflect.TypeOf(parameters{}):    wrapReadParamtersJSON,
+	reflect.TypeOf(parameters{}):    wrapReadParameters,
 }
 
 func wrapGetServicePrincipal(v string) (interface{}, error) {
@@ -85,7 +88,16 @@ func wrapReadJSON(v string) (interface{}, error) {
 	return util.ReadJSON(v)
 }
 
-func wrapReadParamtersJSON(v string) (interface{}, error) {
+func wrapReadParameters(v string) (interface{}, error) {
+	isJSONInput := strings.HasSuffix(v, ".json") // Todo: This check should be more resilient
+	if isJSONInput == true {                     // Check if we are dealing with a path to a json file or raw parameters
+		return wrapReadParametersJSON(v)
+	}
+
+	return wrapReadRawParameters(v)
+}
+
+func wrapReadParametersJSON(v string) (interface{}, error) {
 	logrus.Debugf("Parsing parameter json %s", v)
 	json, err := util.ReadJSON(v)
 	if err != nil {
@@ -99,4 +111,49 @@ func wrapReadParamtersJSON(v string) (interface{}, error) {
 	}
 
 	return json, nil
+}
+
+func wrapReadRawParameters(v string) (interface{}, error) {
+	parameter := make(map[string]interface{})
+
+	// https://stackoverflow.com/questions/44277222/golang-regular-expression-for-parsing-key-value-pair-into-a-string-map
+	lastQuote := rune(0)
+	f := func(c rune) bool {
+		switch {
+		case c == lastQuote:
+			lastQuote = rune(0)
+			return false
+		case lastQuote != rune(0):
+			return false
+		case unicode.In(c, unicode.Quotation_Mark):
+			lastQuote = c
+			return false
+		default:
+			return unicode.IsSpace(c)
+
+		}
+	}
+
+	// splitting string by space/newline but considering quoted section
+	pairs := strings.FieldsFunc(v, f)
+
+	for _, keyValuePair := range pairs {
+		keyValue := strings.Split(keyValuePair, "=")
+		if len(keyValue) != 2 {
+			return nil, fmt.Errorf("Found invalid pair, expected KEY=VALUE got %s", keyValuePair)
+		}
+
+		// remove all unicode quotation marks (Todo: should really all be removed?)
+		value := strings.Map(func(r rune) rune {
+			if unicode.In(r, unicode.Quotation_Mark) {
+				return -1
+			}
+			return r
+		}, keyValue[1])
+
+		parameter[keyValue[0]] = make(map[string]string)
+		parameter[keyValue[0]].(map[string]string)["value"] = strings.TrimSpace(value)
+	}
+
+	return parameter, nil
 }

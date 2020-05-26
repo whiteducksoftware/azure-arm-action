@@ -16,6 +16,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
+	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
 // Deploy takes our inputs and initaite and
@@ -27,9 +28,12 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, uuid, inputs.DeploymentName, uuid, inputs.DeploymentMode)
 	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid)
 
+	// Build our final parameters
+	parameter := util.MergeParameters(inputs.Parameters, inputs.OverrideParameters)
+
 	// Validate deployment
 	logrus.Infof("Validating deployment %s", inputs.DeploymentName)
-	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, inputs.Parameters)
+	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}
@@ -41,7 +45,7 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 
 	// Create and wait for completion of the deployment
 	logrus.Infof("Creating deployment %s", inputs.DeploymentName)
-	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, inputs.Parameters)
+	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}

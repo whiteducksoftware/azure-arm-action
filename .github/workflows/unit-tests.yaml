@@ -32,7 +32,9 @@ jobs:
           INPUT_CREDS: ${{ secrets.AZURE_CREDENTIALS }}
           INPUT_RESOURCEGROUPNAME: azurearmaction
           INPUT_TEMPLATELOCATION: ./test/template.json
-          INPUT_PARAMETERSLOCATION: ./test/parameters.json
+          INPUT_PARAMETERS: ./test/parameters.json
+          INPUT_OVERRIDEPARAMETERS: |
+            containerName=github-action-overriden
           INPUT_DEPLOYMENTNAME: github-test
           INPUT_DEPLOYMENTMODE: Incremental
         run: go test -v -failfast .

@@ -19,7 +19,7 @@ A GitHub Action to deploy ARM templates.
 
 * `templateLocation` **Required**  
     Specify the path to the Azure Resource Manager template.  
-(See [assets/json/template.json](assets/json/template.json))
+(See [assets/json/template.json](test/template.json))
 
 * `deploymentMode`   
     Incremental (only add resources to resource group) or Complete (remove extra resources from resource group). Default: `Incremental`.
@@ -27,12 +27,17 @@ A GitHub Action to deploy ARM templates.
 * `deploymentName`  
     Specifies the name of the resource group deployment to create.
 
-* `parametersLocation`   
-    Specify the path to the Azure Resource Manager parameters file.  
-    (See [assets/json/serviceprincipal.json](assets/json/parameters.json))
+* `parameters`   
+    Specify the path to the Azure Resource Manager parameters file or pass them as Key-Value Pairs.  
+    (See [examples/Advanced.md](examples/Advanced.md))
+
+* `overrideParameters`   
+    Specify the path to the Azure Resource Manager override parameters file or pass them as Key-Value Pairs.  
+    (See [examples/Advanced.md](examples/Advanced.md))
 
 ## Outputs
 Every template output will be exported as output. For example the output is called `containerName` then it will be available with `${{ steps.STEP.outputs.containerName }}`    
+For more Information see [examples/Advanced.md](examples/Advanced.md).    
 Additionally are the following outputs available:
 * `deploymentName` Specifies the complete deployment name which has been generated
 
@@ -63,6 +68,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
         templateLocation: <path/to/azuredeploy.json>
-        parametersLocation: <path/to/parameters.json>
+        parametersLocation: <path/to/parameters.json> OR  <KEY=VALUE>
         deploymentName: <Deployment base name>
 ```
+For more advanced workflows see [examples/Advanced.md](examples/Advanced.md).

@@ -11,9 +11,10 @@
             "mode": "auto",
             "program": "${workspaceRoot}",
             "env": {
-                //"HTTP_PROXY": "http://127.0.0.1:8080",
+                "HTTP_PROXY": "http://127.0.0.1:8080",
                 "INPUT_TEMPLATELOCATION": "${workspaceRoot}/test/template.json",
-                "INPUT_PARAMETERSLOCATION": "${workspaceRoot}/test/parameters.json",
+                "INPUT_PARAMETERS": "${workspaceRoot}/test/parameters.json",
+                "INPUT_OVERRIDEPARAMETERS": "containerName=\"it even works with spaces and special chars ^^!$*:_)§$\"\nimageName=whiteduck/sample-mvc/new", // "${workspaceRoot}/test/parameters.json",
                 "INPUT_DEPLOYMENTNAME": "vscode-debug",
                 "INPUT_DEPLOYMENTMODE": "Incremental",
                 "INPUT_RESOURCEGROUPNAME": "azurearmaction",

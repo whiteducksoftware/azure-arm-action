@@ -18,8 +18,11 @@ inputs:
     description: "Incremental (only add resources to resource group) or Complete (remove extra resources from resource group)."
     required: false
     default: Incremental
-  parametersLocation:
-    description: "Specify the path to the Azure Resource Manager parameters file."
+  parameters:
+    description: "Specify either path to the Azure Resource Manager parameters file or pass them as 'key1=value1;key2=value2;...'."
+    required: false
+  overrideParameters:
+    description: "Specify either path to the Azure Resource Manager override parameters file or pass them as 'key1=value1;key2=value2;...'."
     required: false
 outputs:
   deploymentName:
