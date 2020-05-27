@@ -68,7 +68,7 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
         templateLocation: <path/to/azuredeploy.json>
-        parametersLocation: <path/to/parameters.json> OR  <KEY=VALUE>
+        parameters: <path/to/parameters.json> OR <KEY=VALUE>
         deploymentName: <Deployment base name>
 ```
 For more advanced workflows see [examples/Advanced.md](examples/Advanced.md).
