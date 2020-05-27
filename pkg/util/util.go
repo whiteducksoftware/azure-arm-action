@@ -28,20 +28,17 @@ func ReadJSON(path string) (map[string]interface{}, error) {
 
 // MergeParameters takes the original and override parameters and merges them together
 func MergeParameters(original map[string]interface{}, override map[string]interface{}) map[string]interface{} {
-	if original == nil && override == nil {
+	switch {
+	case original == nil && override == nil:
 		return make(map[string]interface{})
-	}
-
-	if original == nil {
+	case original == nil:
 		return override
-	}
-
-	if override == nil {
+	case override == nil:
 		return original
-	}
-
-	if len(override) == 0 {
+	case len(override) == 0:
 		return original
+	default:
+		break
 	}
 
 	for key, value := range override {

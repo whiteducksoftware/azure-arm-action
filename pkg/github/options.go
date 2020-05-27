@@ -104,7 +104,7 @@ func wrapReadParametersJSON(v string) (interface{}, error) {
 		return json, err
 	}
 
-	// Check if the parameters are wrapped
+	// Check if the parameters are wrapped (https://github.com/Azure/azure-sdk-for-go/issues/9283)
 	paramters, ok := json["parameters"]
 	if ok {
 		return paramters, nil
