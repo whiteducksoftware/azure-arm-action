@@ -32,4 +32,4 @@ branding:
   icon: package
 runs:
   using: 'docker'
-  image: 'docker://whiteduck/azure-arm-action:v3'
+  image: 'docker://whiteduck/azure-arm-action:v3.1'

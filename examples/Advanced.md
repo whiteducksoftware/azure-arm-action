@@ -4,7 +4,7 @@ Our template has two outputs `location` and `containerName`. But we are only int
 
 ## Steps
 ```yaml
-- uses: whiteducksoftware/azure-arm-action@v3
+- uses: whiteducksoftware/azure-arm-action@v3.1
   id: deploy
   with:
       creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -36,7 +36,7 @@ we can see that on the console will be `github-action` printed.
 
 Now we add our second deployment which relies on that value and modfies the `containerName` parameter,
 ```yaml
-- uses: whiteducksoftware/azure-arm-action@v3
+- uses: whiteducksoftware/azure-arm-action@v3.1
   id: deploy2
   with:
       creds: ${{ secrets.AZURE_CREDENTIALS }}
