@@ -3,6 +3,8 @@
 A GitHub Action to deploy ARM templates.
 
 ![build and publish](https://github.com/whiteducksoftware/azure-arm-action/workflows/build-release/badge.svg)
+[![go report](https://goreportcard.com/badge/github.com/whiteducksoftware/azure-arm-action)](https://goreportcard.com/report/github.com/whiteducksoftware/azure-arm-action)
+[![License: MIT](https://img.shields.io/badge/License-MIT-suceess.svg)](LICENSE)
 
 ![white duck logo](img/wd-githubaction-arm.png?raw=true)
 
