@@ -134,9 +134,23 @@ func ValidateDeployment(ctx context.Context, deployClient resources.DeploymentsC
 		})
 }
 
+// ValidateDeploymentAtSubscriptionScope validates the template deployments and their
+// parameters are correct and will produce a successful deployment.GetResource (at subscription scope)
+func ValidateDeploymentAtSubscriptionScope(ctx context.Context, deployClient resources.DeploymentsClient, deploymentName string, deploymentMode string, template, params map[string]interface{}) (valid resources.DeploymentValidateResult, err error) {
+	return deployClient.ValidateAtSubscriptionScope(ctx,
+		deploymentName,
+		resources.Deployment{
+			Properties: &resources.DeploymentProperties{
+				Template:   template,
+				Parameters: params,
+				Mode:       resources.DeploymentMode(deploymentMode),
+			},
+		})
+}
+
 // CreateDeployment creates a template deployment using the
 // referenced JSON files for the template and its parameters
-func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName string, deploymentName string, deploymentMode string, template, params map[string]interface{}) (de resources.DeploymentExtended, err error) {
+func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsClient, resourceGroupName, deploymentName string, deploymentMode string, template, params map[string]interface{}) (de resources.DeploymentExtended, err error) {
 	future, err := deployClient.CreateOrUpdate(
 		ctx,
 		resourceGroupName,
@@ -149,6 +163,33 @@ func CreateDeployment(ctx context.Context, deployClient resources.DeploymentsCli
 			},
 		},
 	)
+	if err != nil {
+		return de, fmt.Errorf("cannot create deployment: %v", err)
+	}
+
+	err = future.WaitForCompletionRef(ctx, deployClient.Client)
+	if err != nil {
+		return de, fmt.Errorf("cannot get the create deployment future respone: %v", err)
+	}
+
+	return future.Result(deployClient)
+}
+
+// CreateDeploymentAtSubscriptionScope creates a template deployment using the
+// referenced JSON files for the template and its parameters (at subscription scope)
+func CreateDeploymentAtSubscriptionScope(ctx context.Context, deployClient resources.DeploymentsClient, deploymentName, deploymentMode string, template, params map[string]interface{}) (de resources.DeploymentExtended, err error) {
+	future, err := deployClient.CreateOrUpdateAtSubscriptionScope(
+		ctx,
+		deploymentName,
+		resources.Deployment{
+			Properties: &resources.DeploymentProperties{
+				Template:   template,
+				Parameters: params,
+				Mode:       resources.DeploymentMode(deploymentMode),
+			},
+		},
+	)
+
 	if err != nil {
 		return de, fmt.Errorf("cannot create deployment: %v", err)
 	}

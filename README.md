@@ -14,12 +14,13 @@ A GitHub Action to deploy ARM templates.
 * `creds` **Required**   
     [Create Service Principal for Authentication](#Create-Service-Principal-for-Authentication)    
 
-* `resourceGroupName` **Required**   
-    Provide the name of a resource group.
-
 * `templateLocation` **Required**  
     Specify the path to the Azure Resource Manager template.  
 (See [assets/json/template.json](test/template.json))
+
+* `resourceGroupName`    
+    Provide the name of a resource group.    
+    If you dont pass a resource group name the template will be deployed at subscription scope
 
 * `deploymentMode`   
     Incremental (only add resources to resource group) or Complete (remove extra resources from resource group). Default: `Incremental`.

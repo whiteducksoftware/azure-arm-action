@@ -33,7 +33,16 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 
 	// Validate deployment
 	logrus.Infof("Validating deployment %s", inputs.DeploymentName)
-	validationResult, err := azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	var validationResult resources.DeploymentValidateResult
+	var err error
+
+	// check whenether we need to deploy at resource group or subscription scope
+	if len(inputs.ResourceGroupName) > 0 {
+		validationResult, err = azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	} else {
+		validationResult, err = azure.ValidateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	}
+
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}
@@ -45,10 +54,20 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 
 	// Create and wait for completion of the deployment
 	logrus.Infof("Creating deployment %s", inputs.DeploymentName)
-	resultDeployment, err := azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	var resultDeployment resources.DeploymentExtended
+
+	// check whenether we need to deploy at resource group or subscription scope
+	if len(inputs.ResourceGroupName) > 0 {
+		resultDeployment, err = azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	} else {
+		resultDeployment, err = azure.CreateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+	}
+
 	if err != nil {
 		return resources.DeploymentExtended{}, err
 	}
+
+	// verify the status
 	if resultDeployment.StatusCode != http.StatusOK {
 		return resources.DeploymentExtended{}, fmt.Errorf("%s", resultDeployment.Status)
 	}
