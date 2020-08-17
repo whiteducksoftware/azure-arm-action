@@ -31,7 +31,7 @@ A GitHub Action to deploy ARM templates.
     Specifies the name of the resource group deployment to create.
 
 * `parameters`   
-    Specify the path to the Azure Resource Manager parameters file or pass them as Key-Value Pairs.  
+    Specify the path to the Azure Resource Manager parameters file or pass them as space delimited Key-Value Pairs.  
     (See [examples/Advanced.md](examples/Advanced.md))
 
 * `overrideParameters`   
