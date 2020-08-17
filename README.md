@@ -35,7 +35,7 @@ A GitHub Action to deploy ARM templates.
     (See [examples/Advanced.md](examples/Advanced.md))
 
 * `overrideParameters`   
-    Specify the path to the Azure Resource Manager override parameters file or pass them as Key-Value Pairs.  
+    Specify the path to the Azure Resource Manager override parameters file or pass them as space delimited Key-Value Pairs.  
     (See [examples/Advanced.md](examples/Advanced.md))
 
 ## Outputs
