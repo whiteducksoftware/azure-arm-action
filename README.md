@@ -1,5 +1,3 @@
-> Deprecated and replaced by [Deploy Azure Resource Manager (ARM) Template](https://github.com/marketplace/actions/deploy-azure-resource-manager-arm-template)!
-
 # GitHub Action for Azure Resource Manager (ARM) deployment
 
 A GitHub Action to deploy ARM templates.
