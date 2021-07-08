@@ -2,8 +2,6 @@ name: Unit Tests
 on:
   pull_request:
   push:
-    branches:
-        - 'master'
 
 jobs:
   test_action_job:
@@ -24,7 +22,7 @@ jobs:
           GOOS: linux 
           GOARCH: amd64
         run: go build -a -installsuffix cgo -ldflags="-w -s" .
-        
+
       - name: Test
         env:
           GOPROXY: "https://proxy.golang.org"
@@ -38,6 +36,7 @@ jobs:
           INPUT_PARAMETERS: ./test/parameters.json
           INPUT_OVERRIDEPARAMETERS: |
             containerName=github-action-overriden
+            connectionString='Server=tcp:test.database.windows.net;Database=test;User ID=test;Password=test;Trusted_Connection=False;Encrypt=True;'
           INPUT_DEPLOYMENTNAME: github-test
           INPUT_DEPLOYMENTMODE: Incremental
         run: go test -v -failfast .

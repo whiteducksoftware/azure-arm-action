@@ -137,7 +137,7 @@ func wrapReadRawParameters(v string) (interface{}, error) {
 	pairs := strings.FieldsFunc(v, f)
 
 	for _, keyValuePair := range pairs {
-		keyValue := strings.Split(keyValuePair, "=")
+		keyValue := strings.SplitN(keyValuePair, "=", 2)
 		if len(keyValue) != 2 {
 			return nil, fmt.Errorf("Found invalid pair, expected KEY=VALUE got %s", keyValuePair)
 		}
@@ -151,7 +151,7 @@ func wrapReadRawParameters(v string) (interface{}, error) {
 		}, keyValue[1])
 
 		parameter[keyValue[0]] = make(map[string]string)
-		parameter[keyValue[0]].(map[string]string)["value"] = strings.TrimSpace(value)
+		parameter[keyValue[0]].(map[string]string)["value"] = value
 	}
 
 	return parameter, nil

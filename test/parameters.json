@@ -36,6 +36,9 @@
                     "protocol": "TCP"
                 }
             ]
+        },
+        "connectionString": {
+            "value": "not_a_real_connection_string"
         }
     }
 }

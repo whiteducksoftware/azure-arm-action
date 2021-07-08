@@ -44,6 +44,9 @@
         },
         "ports": {
             "type": "array"
+        },
+        "connectionString": {
+            "type": "string"
         }
     },
     "resources": [
@@ -86,6 +89,10 @@
         "containerName": {
             "type": "string",
             "value": "[parameters('containerName')]"
+        },
+        "connectionString": { 
+            "type": "string",
+            "value": "[parameters('connectionString')]"
         }
     }
 }

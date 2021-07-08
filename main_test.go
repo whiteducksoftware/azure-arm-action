@@ -46,8 +46,8 @@ func TestParseOutputs(t *testing.T) {
 		t.Error(err.Error())
 	}
 
-	if len(outputs) != 2 {
-		t.Errorf("Got invalid count of outputs, expected 2 got %d", len(outputs))
+	if len(outputs) != 3 {
+		t.Errorf("Got invalid count of outputs, expected  got %d", len(outputs))
 	}
 
 	// Test output key location
@@ -68,6 +68,18 @@ func TestParseOutputs(t *testing.T) {
 
 	// This also tests if the override did work
 	if value.Value != "github-action-overriden" {
-		t.Errorf("Got invalid value for location key, expected %s got %s", "github-action-overriden", value.Value)
+		t.Errorf("Got invalid value for containerName key, expected %s got %s", "github-action-overriden", value.Value)
+	}
+
+	// Test output key containername
+	value, ok = outputs["connectionString"]
+	if !ok {
+		t.Errorf("Test key is missing in the outputs, exptected the key containerName to be present")
+	}
+
+	// This also tests if the override did work
+	var expectedConnectionString = "Server=tcp:test.database.windows.net;Database=test;User ID=test;Password=test;Trusted_Connection=False;Encrypt=True;"
+	if value.Value != expectedConnectionString {
+		t.Errorf("Got invalid value for connectionString key, expected %s got %s", expectedConnectionString, value.Value)
 	}
 }
