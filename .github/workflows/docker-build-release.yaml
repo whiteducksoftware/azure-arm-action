@@ -20,7 +20,7 @@ jobs:
         id: meta
         name: Docker meta
         with:
-          images: whiteducksoftware/azure-arm-action
+          images: ghcr.io/whiteducksoftware/azure-arm-action
           tags: |
             type=ref,event=branch
             type=ref,event=tag
