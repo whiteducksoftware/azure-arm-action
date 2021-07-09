@@ -1,6 +1,6 @@
 module github.com/whiteducksoftware/azure-arm-action
 
-go 1.14
+go 1.16
 
 require (
 	github.com/Azure/azure-sdk-for-go v55.6.0+incompatible

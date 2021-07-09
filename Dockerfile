@@ -1,5 +1,5 @@
 # Builder
-FROM golang:alpine as builder
+FROM golang:1.16-alpine as builder
 WORKDIR /app
 
 # Install git + SSL ca certificates.
