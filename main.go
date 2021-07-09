@@ -31,6 +31,8 @@ func init() {
 }
 
 func main() {
+	logrus.Info(__Version__)
+
 	opts, err := github.LoadOptions()
 	if err != nil {
 		logrus.Errorf("failed to load options: %s", err)

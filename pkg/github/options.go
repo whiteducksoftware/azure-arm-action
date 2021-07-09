@@ -151,7 +151,7 @@ func wrapReadRawParameters(v string) (interface{}, error) {
 		}, keyValue[1])
 
 		parameter[keyValue[0]] = make(map[string]string)
-		parameter[keyValue[0]].(map[string]string)["value"] = value
+		parameter[keyValue[0]].(map[string]string)["value"] = strings.TrimSpace(value)
 	}
 
 	return parameter, nil

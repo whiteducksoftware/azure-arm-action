@@ -46,6 +46,11 @@ func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (*autorest.Authorizer, error) {
 		return nil, err
 	}
 
+	// If the Resource Manager Endpoint is not set, fallback to the default public cloud endpoint
+	if len(auth.ARMEndpointURL) == 0 {
+		auth.ARMEndpointURL = azure.PublicCloud.ResourceManagerEndpoint
+	}
+
 	token, err := adal.NewServicePrincipalToken(*oauthconfig, auth.ClientID, auth.ClientSecret, auth.ARMEndpointURL)
 	if err != nil {
 		return nil, err

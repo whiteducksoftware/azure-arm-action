@@ -17,7 +17,9 @@ RUN go mod download
 RUN go mod verify
 
 # Build the binary.
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -ldflags="-w -s" -o /go/bin/azure-arm-action
+ARG GITHASH
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
+    go build -ldflags="-w -s -X main.gitHash=${GITHASH} -X main.goVersion=$(go version | cut -d " " -f 3) -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -a -o /go/bin/azure-arm-action
 
 # Runner
 FROM scratch
