@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@master
 
       - uses: docker/metadata-action@v3
+        id: meta
         name: Docker meta
         with:
           images: whiteducksoftware/azure-arm-action
