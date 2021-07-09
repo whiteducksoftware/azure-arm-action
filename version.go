@@ -24,5 +24,5 @@ func init() {
 }
 
 func (ver Version) String() string {
-	return fmt.Sprintf("\nGit hash: %s\nGo version: %s\nBuild time: %s", __Version__.GitHash, __Version__.GoVersion, __Version__.BuildTime)
+	return fmt.Sprintf("GitHash: %s, GoVersion: %s, BuildTime: %s", __Version__.GitHash, __Version__.GoVersion, __Version__.BuildTime)
 }
