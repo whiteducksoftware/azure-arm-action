@@ -112,7 +112,7 @@ func GetArmAuthorizerFromEnvironment() (*autorest.Authorizer, error) {
 // GetArmAuthorizerFromCLI creates an ARM authorizer from the local azure cli
 func GetArmAuthorizerFromCLI() (*autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
-	authorizer, err := auth.NewAuthorizerFromCLI()
+	authorizer, err := auth.NewAuthorizerFromCLIWithResource(azure.PublicCloud.ResourceManagerEndpoint)
 
 	return &authorizer, err
 }
