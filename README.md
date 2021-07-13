@@ -71,7 +71,6 @@ jobs:
 
     - uses: whiteducksoftware/azure-arm-action@v3.3
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
         templateLocation: <path/to/azuredeploy.json>
         parameters: <path/to/parameters.json> OR <KEY=VALUE>
