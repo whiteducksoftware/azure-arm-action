@@ -14,7 +14,6 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/sirupsen/logrus"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 )
 
@@ -37,10 +36,10 @@ type GitHub struct {
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials        azure.SDKAuth `env:"INPUT_CREDS"`
 	Template           template      `env:"INPUT_TEMPLATELOCATION"`
 	Parameters         parameters    `env:"INPUT_PARAMETERS"`
 	OverrideParameters parameters    `env:"INPUT_OVERRIDEPARAMETERS"`
+	SubscriptionId     string        `env:"INPUT_SUBSCRIPTIONID"`
 	ResourceGroupName  string        `env:"INPUT_RESOURCEGROUPNAME"`
 	DeploymentName     string        `env:"INPUT_DEPLOYMENTNAME"`
 	DeploymentMode     string        `env:"INPUT_DEPLOYMENTMODE"`
@@ -74,13 +73,8 @@ func LoadOptions() (*Options, error) {
 
 // custom type parser
 var customTypeParser = map[reflect.Type]env.ParserFunc{
-	reflect.TypeOf(azure.SDKAuth{}): wrapGetServicePrincipal,
-	reflect.TypeOf(template{}):      wrapReadJSON,
-	reflect.TypeOf(parameters{}):    wrapReadParameters,
-}
-
-func wrapGetServicePrincipal(v string) (interface{}, error) {
-	return azure.GetSdkAuthFromString(v)
+	reflect.TypeOf(template{}):   wrapReadJSON,
+	reflect.TypeOf(parameters{}): wrapReadParameters,
 }
 
 func wrapReadJSON(v string) (interface{}, error) {
