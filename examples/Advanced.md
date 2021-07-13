@@ -4,6 +4,13 @@ Our template has two outputs `location` and `containerName`. But we are only int
 
 ## Steps
 ```yaml
+- name: Login to Azure
+  uses: Azure/login@v1
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+```
+As first step we need to authenticate with Azure.
+```yaml
 - uses: whiteducksoftware/azure-arm-action@v3.3
   id: deploy
   with:
