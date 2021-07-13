@@ -7,7 +7,6 @@ Our template has two outputs `location` and `containerName`. But we are only int
 - uses: whiteducksoftware/azure-arm-action@v3.3
   id: deploy
   with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
       resourceGroupName: azurearmaction
       templateLocation: examples/template/template.json
       parameters: examples/template/parameters.json
@@ -39,7 +38,6 @@ Now we add our second deployment which relies on that value and modfies the `con
 - uses: whiteducksoftware/azure-arm-action@v3.3
   id: deploy2
   with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
       resourceGroupName: azurearmaction
       templateLocation: examples/template/template.json
       parameters: examples/template/parameters.json
