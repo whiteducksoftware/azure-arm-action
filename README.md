@@ -11,11 +11,9 @@ A GitHub Action to deploy ARM templates.
 ## Dependencies
 
 * [Checkout](https://github.com/actions/checkout) To checks-out your repository so the workflow can access any specified ARM template.
+* [Azure/Login](https://github.com/Azure/login) To authenticate with Azure.
 
 ## Inputs
-* `creds` **Required**   
-    [Create Service Principal for Authentication](#Create-Service-Principal-for-Authentication)    
-
 * `templateLocation` **Required**  
     Specify the path to the Azure Resource Manager template.  
 (See [assets/json/template.json](test/template.json))
@@ -47,9 +45,8 @@ Additionally are the following outputs available:
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v3.2.2
+- uses: whiteducksoftware/azure-arm-action@v3.3
   with:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
     templateLocation: <path/to/azuredeploy.json>
     deploymentName: <Deployment base name>
@@ -66,7 +63,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - uses: whiteducksoftware/azure-arm-action@v3.2.2
+
+    - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - uses: whiteducksoftware/azure-arm-action@v3.3
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
