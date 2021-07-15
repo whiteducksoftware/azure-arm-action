@@ -6,11 +6,14 @@ This code is licensed under MIT license (see LICENSE for details)
 package azure
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
+	"runtime"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/2019-03-01/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
@@ -112,7 +115,7 @@ func GetArmAuthorizerFromEnvironment() (*autorest.Authorizer, error) {
 // GetArmAuthorizerFromCLI creates an ARM authorizer from the local azure cli
 func GetArmAuthorizerFromCLI() (*autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
-	authorizer, err := auth.NewAuthorizerFromCLI()
+	authorizer, err := auth.NewAuthorizerFromCLIWithResource(azure.PublicCloud.ResourceManagerEndpoint)
 
 	return &authorizer, err
 }
@@ -205,4 +208,47 @@ func CreateDeploymentAtSubscriptionScope(ctx context.Context, deployClient resou
 	}
 
 	return future.Result(deployClient)
+}
+
+func GetActiveSubscriptionFromCLI() (string, error) {
+	// This is the path that a developer can set to tell this class what the install path for Azure CLI is.
+	const azureCLIPath = "AzureCLIPath"
+
+	// The default install paths are used to find Azure CLI. This is for security, so that any path in the calling program's Path environment is not used to execute Azure CLI.
+	azureCLIDefaultPathWindows := fmt.Sprintf("%s\\Microsoft SDKs\\Azure\\CLI2\\wbin; %s\\Microsoft SDKs\\Azure\\CLI2\\wbin", os.Getenv("ProgramFiles(x86)"), os.Getenv("ProgramFiles"))
+
+	// Default path for non-Windows.
+	const azureCLIDefaultPath = "/bin:/sbin:/usr/bin:/usr/local/bin"
+
+	// Execute Azure CLI to get subscription id
+	var cliCmd *exec.Cmd
+	if runtime.GOOS == "windows" {
+		cliCmd = exec.Command(fmt.Sprintf("%s\\system32\\cmd.exe", os.Getenv("windir")))
+		cliCmd.Env = os.Environ()
+		cliCmd.Env = append(cliCmd.Env, fmt.Sprintf("PATH=%s;%s", os.Getenv(azureCLIPath), azureCLIDefaultPathWindows))
+		cliCmd.Args = append(cliCmd.Args, "/c", "az")
+	} else {
+		cliCmd = exec.Command("az")
+		cliCmd.Env = os.Environ()
+		cliCmd.Env = append(cliCmd.Env, fmt.Sprintf("PATH=%s:%s", os.Getenv(azureCLIPath), azureCLIDefaultPath))
+	}
+	cliCmd.Args = append(cliCmd.Args, "account", "show", "-o", "json")
+
+	var stderr bytes.Buffer
+	cliCmd.Stderr = &stderr
+
+	output, err := cliCmd.Output()
+	if err != nil {
+		return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", stderr.String())
+	}
+
+	var data struct {
+		SubscriptionID string `json:"id"`
+	}
+	err = json.Unmarshal(output, &data)
+	if err != nil {
+		return "", err
+	}
+
+	return data.SubscriptionID, err
 }

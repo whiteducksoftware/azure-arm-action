@@ -11,10 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
-      - uses: whiteducksoftware/azure-arm-action@v3
+      - name: Login to Azure
+        uses: Azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - uses: whiteducksoftware/azure-arm-action@v3.3
         id: deploy
         with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
             resourceGroupName: azurearmaction
             templateLocation: examples/template/template.json
             parameters: examples/template/parameters.json
@@ -22,10 +26,9 @@ jobs:
 
       - run: echo ${{ steps.deploy.outputs.containerName }}
 
-      - uses: whiteducksoftware/azure-arm-action@v3
+      - uses: whiteducksoftware/azure-arm-action@v3.3
         id: deploy2
         with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
             resourceGroupName: azurearmaction
             templateLocation: examples/template/template.json
             parameters: examples/template/parameters.json

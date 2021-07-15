@@ -4,10 +4,16 @@ Our template has two outputs `location` and `containerName`. But we are only int
 
 ## Steps
 ```yaml
-- uses: whiteducksoftware/azure-arm-action@v3.2.2
+- name: Login to Azure
+  uses: Azure/login@v1
+  with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
+```
+As first step we need to authenticate with Azure.
+```yaml
+- uses: whiteducksoftware/azure-arm-action@v3.3
   id: deploy
   with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
       resourceGroupName: azurearmaction
       templateLocation: examples/template/template.json
       parameters: examples/template/parameters.json
@@ -36,10 +42,9 @@ we can see that on the console will be `github-action` printed.
 
 Now we add our second deployment which relies on that value and modfies the `containerName` parameter,
 ```yaml
-- uses: whiteducksoftware/azure-arm-action@v3.2.2
+- uses: whiteducksoftware/azure-arm-action@v3.3
   id: deploy2
   with:
-      creds: ${{ secrets.AZURE_CREDENTIALS }}
       resourceGroupName: azurearmaction
       templateLocation: examples/template/template.json
       parameters: examples/template/parameters.json

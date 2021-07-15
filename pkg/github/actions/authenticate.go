@@ -16,7 +16,7 @@ func Authenticate(inputs github.Inputs) (*autorest.Authorizer, error) {
 	var authorizer *autorest.Authorizer
 
 	// Load authorizer from the service principal
-	authorizer, err := azure.GetArmAuthorizerFromSdkAuth(inputs.Credentials)
+	authorizer, err := azure.GetArmAuthorizerFromCLI()
 	if err != nil {
 		return authorizer, err
 	}

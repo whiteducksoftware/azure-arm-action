@@ -22,8 +22,20 @@ import (
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
 func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Authorizer) (resources.DeploymentExtended, error) {
+	var subscriptionId = inputs.SubscriptionId
+	var err error
+
+	// Try reading the subscription id from the cli if not set explicitly
+	if subscriptionId == "" {
+		subscriptionId, err = azure.GetActiveSubscriptionFromCLI()
+		logrus.Info(subscriptionId)
+		if err != nil {
+			return resources.DeploymentExtended{}, err
+		}
+	}
+
 	// Load the arm deployments client
-	deploymentsClient := azure.GetDeploymentsClient(inputs.Credentials.SubscriptionID, authorizer)
+	deploymentsClient := azure.GetDeploymentsClient(subscriptionId, authorizer)
 	uuid := uuid.New().String()
 	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, uuid, inputs.DeploymentName, uuid, inputs.DeploymentMode)
 	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid)
@@ -34,7 +46,6 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Auth
 	// Validate deployment
 	logrus.Infof("Validating deployment %s", inputs.DeploymentName)
 	var validationResult resources.DeploymentValidateResult
-	var err error
 
 	// check whenether we need to deploy at resource group or subscription scope
 	if len(inputs.ResourceGroupName) > 0 {
