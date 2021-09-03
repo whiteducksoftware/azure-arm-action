@@ -34,7 +34,7 @@ func init() {
 }
 
 func main() {
-	files, err := ioutil.ReadDir(".")
+	files, err := ioutil.ReadDir("/github/home")
 	if err != nil {
 		log.Fatal(err)
 	}
