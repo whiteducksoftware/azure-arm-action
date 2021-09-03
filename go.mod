@@ -7,7 +7,7 @@ require (
 	github.com/Azure/go-autorest/autorest v0.11.20
 	github.com/Azure/go-autorest/autorest/adal v0.9.15
 	github.com/Azure/go-autorest/autorest/azure/auth v0.5.8
-	github.com/Azure/go-autorest/autorest/azure/cli v0.4.3 // indirect
+	github.com/Azure/go-autorest/autorest/azure/cli v0.4.3
 	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
 	github.com/Azure/go-autorest/autorest/validation v0.3.1 // indirect
 	github.com/caarlos0/env v3.5.0+incompatible
@@ -19,7 +19,5 @@ require (
 	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
 )
 
-replace (
-	// Temporary fix until https://github.com/Azure/go-autorest/pull/653 is merged.
-	github.com/Azure/go-autorest/autorest/azure/cli v0.4.3 => ./libs/go-autorest/azure/cli
-)
+// Temporary fix until https://github.com/Azure/go-autorest/pull/653 is merged.
+replace github.com/Azure/go-autorest/autorest/azure/cli v0.4.3 => ./libs/@azure/go-autorest/azure/cli
