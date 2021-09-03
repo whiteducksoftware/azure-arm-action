@@ -7,6 +7,9 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"io/ioutil"
+	"log"
 	"os"
 	"os/signal"
 
@@ -31,7 +34,13 @@ func init() {
 }
 
 func main() {
-	logrus.Info(__Version__)
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+	for _, f := range files {
+		fmt.Println(f.Name())
+	}
 
 	opts, err := github.LoadOptions()
 	if err != nil {

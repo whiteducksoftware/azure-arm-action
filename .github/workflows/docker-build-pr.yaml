@@ -2,11 +2,11 @@ name: Build Image
 
 on:
     pull_request:
-    push:
-        branches:
-            - '*'
-            - '*/*'
-            - '!master'
+#    push:
+#        branches:
+#            - '*'
+#            - '*/*'
+#            - '!master'
 
 jobs:
   update:
