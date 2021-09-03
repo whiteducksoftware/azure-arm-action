@@ -6,20 +6,19 @@ This code is licensed under MIT license (see LICENSE for details)
 package azure
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
-	"runtime"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/2019-03-01/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/Azure/go-autorest/autorest/adal"
 	"github.com/Azure/go-autorest/autorest/azure"
 	"github.com/Azure/go-autorest/autorest/azure/auth"
+	"github.com/Azure/go-autorest/autorest/azure/cli"
 )
 
 // SDKAuth represents Azure Sp
@@ -113,17 +112,24 @@ func GetArmAuthorizerFromEnvironment() (*autorest.Authorizer, error) {
 }
 
 // GetArmAuthorizerFromCLI creates an ARM authorizer from the local azure cli
-func GetArmAuthorizerFromCLI() (*autorest.Authorizer, error) {
-	var authorizer autorest.Authorizer
-	authorizer, err := auth.NewAuthorizerFromCLIWithResource(azure.PublicCloud.ResourceManagerEndpoint)
+func GetArmAuthorizerFromCLI() (autorest.Authorizer, error) {
+	token, err := cli.GetTokenFromCLIWithParams(cli.GetAccessTokenParams{Resource: azure.PublicCloud.ResourceManagerEndpoint})
+	if err != nil {
+		return nil, err
+	}
 
-	return &authorizer, err
+	adalToken, err := token.ToADALToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return autorest.NewBearerAuthorizer(&adalToken), nil
 }
 
 // GetDeploymentsClient takes the azure authorizer and creates an ARM deployments client on the desired subscription
-func GetDeploymentsClient(subscriptionID string, authorizer *autorest.Authorizer) resources.DeploymentsClient {
+func GetDeploymentsClient(subscriptionID string, authorizer autorest.Authorizer) resources.DeploymentsClient {
 	deployClient := resources.NewDeploymentsClient(subscriptionID)
-	deployClient.Authorizer = *authorizer
+	deployClient.Authorizer = authorizer
 	return deployClient
 }
 
@@ -211,35 +217,16 @@ func CreateDeploymentAtSubscriptionScope(ctx context.Context, deployClient resou
 }
 
 func GetActiveSubscriptionFromCLI() (string, error) {
-	// This is the path that a developer can set to tell this class what the install path for Azure CLI is.
-	const azureCLIPath = "AzureCLIPath"
-
-	// The default install paths are used to find Azure CLI. This is for security, so that any path in the calling program's Path environment is not used to execute Azure CLI.
-	azureCLIDefaultPathWindows := fmt.Sprintf("%s\\Microsoft SDKs\\Azure\\CLI2\\wbin; %s\\Microsoft SDKs\\Azure\\CLI2\\wbin", os.Getenv("ProgramFiles(x86)"), os.Getenv("ProgramFiles"))
-
-	// Default path for non-Windows.
-	const azureCLIDefaultPath = "/bin:/sbin:/usr/bin:/usr/local/bin"
-
-	// Execute Azure CLI to get subscription id
-	var cliCmd *exec.Cmd
-	if runtime.GOOS == "windows" {
-		cliCmd = exec.Command(fmt.Sprintf("%s\\system32\\cmd.exe", os.Getenv("windir")))
-		cliCmd.Env = os.Environ()
-		cliCmd.Env = append(cliCmd.Env, fmt.Sprintf("PATH=%s;%s", os.Getenv(azureCLIPath), azureCLIDefaultPathWindows))
-		cliCmd.Args = append(cliCmd.Args, "/c", "az")
-	} else {
-		cliCmd = exec.Command("az")
-		cliCmd.Env = os.Environ()
-		cliCmd.Env = append(cliCmd.Env, fmt.Sprintf("PATH=%s:%s", os.Getenv(azureCLIPath), azureCLIDefaultPath))
-	}
+	cliCmd := cli.GetAzureCLICommand()
 	cliCmd.Args = append(cliCmd.Args, "account", "show", "-o", "json")
-
-	var stderr bytes.Buffer
-	cliCmd.Stderr = &stderr
 
 	output, err := cliCmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("Invoking Azure CLI failed with the following error(s):\n\tinvoke_err: %s\n\tcmd_stderr: %s", err.Error(), stderr.String())
+		if ee, ok := err.(*exec.ExitError); ok {
+			return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", ee.Stderr)
+		}
+
+		return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", err.Error())
 	}
 
 	var data struct {

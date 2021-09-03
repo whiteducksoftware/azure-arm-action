@@ -21,7 +21,7 @@ import (
 
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
-func Deploy(ctx context.Context, inputs github.Inputs, authorizer *autorest.Authorizer) (resources.DeploymentExtended, error) {
+func Deploy(ctx context.Context, inputs github.Inputs, authorizer autorest.Authorizer) (resources.DeploymentExtended, error) {
 	var subscriptionId = inputs.SubscriptionId
 	var err error
 
