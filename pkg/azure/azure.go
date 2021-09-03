@@ -239,7 +239,7 @@ func GetActiveSubscriptionFromCLI() (string, error) {
 
 	output, err := cliCmd.Output()
 	if err != nil {
-		return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", stderr.String())
+		return "", fmt.Errorf("Invoking Azure CLI failed with the following error(s):\n\tinvoke_err: %s\n\tcmd_stderr: %s", err.Error(), stderr.String())
 	}
 
 	var data struct {
