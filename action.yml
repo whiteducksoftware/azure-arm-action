@@ -35,4 +35,4 @@ branding:
   icon: package
 runs:
   using: 'docker'
-  image: 'docker://ghcr.io/whiteducksoftware/azure-arm-action:v3.3'
+  image: 'Dockerfile'
