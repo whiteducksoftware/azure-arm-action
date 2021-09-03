@@ -12,7 +12,7 @@ import (
 
 var (
 	opts             *github.Options
-	authorizer       *autorest.Authorizer
+	authorizer       autorest.Authorizer
 	deploymentResult resources.DeploymentExtended
 )
 
