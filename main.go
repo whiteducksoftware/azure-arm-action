@@ -7,9 +7,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"io/ioutil"
-	"log"
 	"os"
 	"os/signal"
 
@@ -34,14 +31,6 @@ func init() {
 }
 
 func main() {
-	files, err := ioutil.ReadDir("/github/home")
-	if err != nil {
-		log.Fatal(err)
-	}
-	for _, f := range files {
-		fmt.Println(f.Name())
-	}
-
 	opts, err := github.LoadOptions()
 	if err != nil {
 		logrus.Errorf("failed to load options: %s", err)

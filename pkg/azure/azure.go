@@ -11,7 +11,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"os/exec"
 
 	"github.com/Azure/azure-sdk-for-go/profiles/2019-03-01/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
@@ -42,7 +41,7 @@ func GetSdkAuthFromString(credentials string) (SDKAuth, error) {
 }
 
 // GetArmAuthorizerFromSdkAuth creates an ARM authorizer from an Sp
-func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (*autorest.Authorizer, error) {
+func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (autorest.Authorizer, error) {
 	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, auth.TenantID)
 	if err != nil {
 		return nil, err
@@ -62,11 +61,11 @@ func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (*autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
 	authorizer = autorest.NewBearerAuthorizer(token)
 
-	return &authorizer, nil
+	return authorizer, nil
 }
 
 // GetArmAuthorizerFromSdkAuthJSON creats am ARM authorizer from the passed sdk auth file
-func GetArmAuthorizerFromSdkAuthJSON(path string) (*autorest.Authorizer, error) {
+func GetArmAuthorizerFromSdkAuthJSON(path string) (autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
 
 	// Manipulate the AZURE_AUTH_LOCATION var at runtime
@@ -74,23 +73,23 @@ func GetArmAuthorizerFromSdkAuthJSON(path string) (*autorest.Authorizer, error) 
 	defer os.Unsetenv("AZURE_AUTH_LOCATION")
 
 	authorizer, err := auth.NewAuthorizerFromFile(azure.PublicCloud.ResourceManagerEndpoint)
-	return &authorizer, err
+	return authorizer, err
 }
 
 // GetArmAuthorizerFromSdkAuthJSONString creates an ARM authorizer from the sdk auth credentials
-func GetArmAuthorizerFromSdkAuthJSONString(credentials string) (*autorest.Authorizer, error) {
+func GetArmAuthorizerFromSdkAuthJSONString(credentials string) (autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
 
 	// create a temporary file, as the sdk credentials need to be read from a file
 	tmpFile, err := ioutil.TempFile(os.TempDir(), "azure-sdk-auth-")
 	if err != nil {
-		return &authorizer, fmt.Errorf("Cannot create temporary sdk auth file: %s", err)
+		return authorizer, fmt.Errorf("Cannot create temporary sdk auth file: %s", err)
 	}
 	defer os.Remove(tmpFile.Name())
 
 	text := []byte(credentials)
 	if _, err = tmpFile.Write(text); err != nil {
-		return &authorizer, fmt.Errorf("Failed to write to temporary sdk auth file: %s", err)
+		return authorizer, fmt.Errorf("Failed to write to temporary sdk auth file: %s", err)
 	}
 	tmpFile.Close()
 
@@ -100,7 +99,7 @@ func GetArmAuthorizerFromSdkAuthJSONString(credentials string) (*autorest.Author
 
 	authorizer, err = auth.NewAuthorizerFromFile(azure.PublicCloud.ResourceManagerEndpoint)
 
-	return &authorizer, err
+	return authorizer, err
 }
 
 // GetArmAuthorizerFromEnvironment creates an ARM authorizer from a MSI (AAD Pod Identity)
@@ -214,28 +213,4 @@ func CreateDeploymentAtSubscriptionScope(ctx context.Context, deployClient resou
 	}
 
 	return future.Result(deployClient)
-}
-
-func GetActiveSubscriptionFromCLI() (string, error) {
-	cliCmd := cli.GetAzureCLICommand()
-	cliCmd.Args = append(cliCmd.Args, "account", "show", "-o", "json")
-
-	output, err := cliCmd.Output()
-	if err != nil {
-		if ee, ok := err.(*exec.ExitError); ok {
-			return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", ee.Stderr)
-		}
-
-		return "", fmt.Errorf("Invoking Azure CLI failed with the following error: %s", err.Error())
-	}
-
-	var data struct {
-		SubscriptionID string `json:"id"`
-	}
-	err = json.Unmarshal(output, &data)
-	if err != nil {
-		return "", err
-	}
-
-	return data.SubscriptionID, err
 }
