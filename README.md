@@ -55,8 +55,26 @@ Additionally are the following outputs available:
     deploymentName: <Deployment base name>
 ```
 
-## Example
+## Create Service Principal for Authentication
+The Service Principal can be easily generated using the Azure CLI. Using the following command will create the SP in the supported structure.   
+At Subscription Scope: `az ad sp create-for-rbac --name "azure-arm-action" --role contributor --scopes=/subscriptions/********-****-****-****-************/ --sdk-auth -o json`    
+The JSON, which shall be used for authentication, should be in the following format:
+```json
+{
+  "clientId": "********-****-****-****-************",
+  "clientSecret": "[*]",
+  "subscriptionId": "********-****-****-****-************",
+  "tenantId": "********-****-****-****-************",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+```
 
+## Example
 ```yml
 on: [push]
 name: ARMActionSample

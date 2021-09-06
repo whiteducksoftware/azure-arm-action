@@ -27,6 +27,7 @@ type SDKAuth struct {
 	SubscriptionID string `json:"subscriptionId"`
 	TenantID       string `json:"tenantId"`
 	ARMEndpointURL string `json:"resourceManagerEndpointUrl"`
+	ADEndpointURL  string `json:"activeDirectoryEndpointUrl"`
 }
 
 // GetSdkAuthFromString builds from the cmd flags a ServicePrincipal
@@ -42,7 +43,12 @@ func GetSdkAuthFromString(credentials string) (SDKAuth, error) {
 
 // GetArmAuthorizerFromSdkAuth creates an ARM authorizer from an Sp
 func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (autorest.Authorizer, error) {
-	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, auth.TenantID)
+	// If the Active Directory Endpoint is not set, fallback to the default public cloud endpoint
+	if len(auth.ADEndpointURL) == 0 {
+		auth.ADEndpointURL = azure.PublicCloud.ActiveDirectoryEndpoint
+	}
+
+	oauthConfig, err := adal.NewOAuthConfig(auth.ADEndpointURL, auth.TenantID)
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +58,7 @@ func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (autorest.Authorizer, error) {
 		auth.ARMEndpointURL = azure.PublicCloud.ResourceManagerEndpoint
 	}
 
-	token, err := adal.NewServicePrincipalToken(*oauthconfig, auth.ClientID, auth.ClientSecret, auth.ARMEndpointURL)
+	token, err := adal.NewServicePrincipalToken(*oauthConfig, auth.ClientID, auth.ClientSecret, auth.ARMEndpointURL)
 	if err != nil {
 		return nil, err
 	}
