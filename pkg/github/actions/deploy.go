@@ -10,13 +10,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Azure/azure-sdk-for-go/profiles/2019-03-01/resources/mgmt/resources"
+	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
+	resourceUtils "github.com/whiteducksoftware/golang-utilities/azure/resources"
 )
 
 // Deploy takes our inputs and initaite and
@@ -25,7 +25,7 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer autorest.Autho
 	var err error
 
 	// Load the arm deployments client
-	deploymentsClient := azure.GetDeploymentsClient(inputs.Credentials.SubscriptionID, authorizer)
+	deploymentsClient := resourceUtils.GetDeploymentsClient(inputs.Credentials.SubscriptionID, authorizer)
 	u := uuid.New().String()
 	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, u, inputs.DeploymentName, u, inputs.DeploymentMode)
 	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, u)
@@ -39,9 +39,9 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer autorest.Autho
 
 	// check whenether we need to deploy at resource group or subscription scope
 	if len(inputs.ResourceGroupName) > 0 {
-		validationResult, err = azure.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+		validationResult, err = resourceUtils.ValidateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	} else {
-		validationResult, err = azure.ValidateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+		validationResult, err = resourceUtils.ValidateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	}
 
 	if err != nil {
@@ -59,9 +59,9 @@ func Deploy(ctx context.Context, inputs github.Inputs, authorizer autorest.Autho
 
 	// check whenether we need to deploy at resource group or subscription scope
 	if len(inputs.ResourceGroupName) > 0 {
-		resultDeployment, err = azure.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+		resultDeployment, err = resourceUtils.CreateDeployment(ctx, deploymentsClient, inputs.ResourceGroupName, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	} else {
-		resultDeployment, err = azure.CreateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
+		resultDeployment, err = resourceUtils.CreateDeploymentAtSubscriptionScope(ctx, deploymentsClient, inputs.DeploymentName, inputs.DeploymentMode, inputs.Template, parameter)
 	}
 
 	if err != nil {

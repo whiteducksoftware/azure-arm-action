@@ -13,6 +13,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
+	githubactions "github.com/whiteducksoftware/golang-utilities/github/actions"
 )
 
 func init() {
@@ -70,9 +71,9 @@ func main() {
 	}
 
 	// write the outputs and the deploymentName to our outputs
-	github.SetOutput("deploymentName", *resultDeployment.Name)
+	githubactions.SetOutput("deploymentName", *resultDeployment.Name)
 	for name, output := range outputs {
-		github.SetOutput(name, output.Value)
+		githubactions.SetOutput(name, output.Value)
 	}
 
 	if githubOptions.RunningAsAction {

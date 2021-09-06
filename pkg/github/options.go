@@ -14,30 +14,18 @@ import (
 
 	"github.com/caarlos0/env"
 	"github.com/sirupsen/logrus"
-	"github.com/whiteducksoftware/azure-arm-action/pkg/azure"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
+	"github.com/whiteducksoftware/golang-utilities/azure/auth"
+	"github.com/whiteducksoftware/golang-utilities/github/actions"
 )
 
 // Wrapper types to define how we need to parse the input json
 type template map[string]interface{}
 type parameters map[string]interface{}
 
-// GitHub represents the inputs which github provides us on default
-type GitHub struct {
-	Workflow        string `env:"GITHUB_WORKFLOW"`
-	Action          string `env:"GITHUB_ACTION"`
-	Actor           string `env:"GITHUB_ACTOR"`
-	Repository      string `env:"GITHUB_REPOSITORY"`
-	Commit          string `env:"GITHUB_SHA"`
-	EventName       string `env:"GITHUB_EVENT_NAME"`
-	EventPath       string `env:"GITHUB_EVENT_PATH"`
-	Ref             string `env:"GITHUB_REF"`
-	RunningAsAction bool   `env:"GITHUB_ACTIONS" envDefault:"false"`
-}
-
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials        azure.SDKAuth `env:"INPUT_CREDS"`
+	Credentials        auth.SDKAuth  `env:"INPUT_CREDS"`
 	Template           template      `env:"INPUT_TEMPLATELOCATION"`
 	Parameters         parameters    `env:"INPUT_PARAMETERS"`
 	OverrideParameters parameters    `env:"INPUT_OVERRIDEPARAMETERS"`
@@ -49,13 +37,13 @@ type Inputs struct {
 
 // Options is a combined struct of all inputs
 type Options struct {
-	GitHub GitHub
+	GitHub actions.GitHub
 	Inputs Inputs
 }
 
 // LoadOptions parses the environment vars and reads github options and our custom inputs
 func LoadOptions() (*Options, error) {
-	github := GitHub{}
+	github := actions.GitHub{}
 	if err := env.Parse(&github); err != nil {
 		return nil, fmt.Errorf("failed to parse github envrionments: %s", err)
 	}
@@ -74,13 +62,19 @@ func LoadOptions() (*Options, error) {
 
 // custom type parser
 var customTypeParser = map[reflect.Type]env.ParserFunc{
-	reflect.TypeOf(azure.SDKAuth{}): wrapGetServicePrincipal,
-	reflect.TypeOf(template{}):      wrapReadJSON,
-	reflect.TypeOf(parameters{}):    wrapReadParameters,
+	reflect.TypeOf(auth.SDKAuth{}): wrapGetServicePrincipal,
+	reflect.TypeOf(template{}):     wrapReadJSON,
+	reflect.TypeOf(parameters{}):   wrapReadParameters,
 }
 
 func wrapGetServicePrincipal(v string) (interface{}, error) {
-	return azure.GetSdkAuthFromString(v)
+	var sdkAuth auth.SDKAuth
+	err := sdkAuth.FromString(v)
+	if err != nil {
+		return nil, err
+	}
+
+	return sdkAuth, nil
 }
 
 func wrapReadJSON(v string) (interface{}, error) {
