@@ -22,23 +22,13 @@ import (
 // Deploy takes our inputs and initaite and
 // waits for completion of the arm template deployment
 func Deploy(ctx context.Context, inputs github.Inputs, authorizer autorest.Authorizer) (resources.DeploymentExtended, error) {
-	var subscriptionId = inputs.SubscriptionId
 	var err error
 
-	// Try reading the subscription id from the cli if not set explicitly
-	if subscriptionId == "" {
-		subscriptionId, err = azure.GetActiveSubscriptionFromCLI()
-		logrus.Info(subscriptionId)
-		if err != nil {
-			return resources.DeploymentExtended{}, err
-		}
-	}
-
 	// Load the arm deployments client
-	deploymentsClient := azure.GetDeploymentsClient(subscriptionId, authorizer)
-	uuid := uuid.New().String()
-	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, uuid, inputs.DeploymentName, uuid, inputs.DeploymentMode)
-	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, uuid)
+	deploymentsClient := azure.GetDeploymentsClient(inputs.Credentials.SubscriptionID, authorizer)
+	u := uuid.New().String()
+	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", inputs.DeploymentName, u, inputs.DeploymentName, u, inputs.DeploymentMode)
+	inputs.DeploymentName = fmt.Sprintf("%s-%s", inputs.DeploymentName, u)
 
 	// Build our final parameters
 	parameter := util.MergeParameters(inputs.Parameters, inputs.OverrideParameters)

@@ -13,12 +13,10 @@ import (
 
 // Authenticate creates and azure authorizer
 func Authenticate(inputs github.Inputs) (autorest.Authorizer, error) {
-	var authorizer autorest.Authorizer
-
 	// Load authorizer from the service principal
-	authorizer, err := azure.GetArmAuthorizerFromCLI()
+	authorizer, err := azure.GetArmAuthorizerFromSdkAuth(inputs.Credentials)
 	if err != nil {
-		return authorizer, err
+		return nil, err
 	}
 
 	return authorizer, nil

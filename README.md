@@ -11,9 +11,11 @@ A GitHub Action to deploy ARM templates.
 ## Dependencies
 
 * [Checkout](https://github.com/actions/checkout) To checks-out your repository so the workflow can access any specified ARM template.
-* [Azure/Login](https://github.com/Azure/login) To authenticate with Azure.
 
 ## Inputs
+* `creds` **Required**   
+    [Create Service Principal for Authentication](#Create-Service-Principal-for-Authentication)    
+
 * `templateLocation` **Required**  
     Specify the path to the Azure Resource Manager template.  
 (See [assets/json/template.json](test/template.json))
@@ -45,15 +47,34 @@ Additionally are the following outputs available:
 ## Usage
 
 ```yml
-- uses: whiteducksoftware/azure-arm-action@v3.3
+- uses: whiteducksoftware/azure-arm-action@master
   with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
     resourceGroupName: <YourResourceGroup>
     templateLocation: <path/to/azuredeploy.json>
     deploymentName: <Deployment base name>
 ```
 
-## Example
+## Create Service Principal for Authentication
+The Service Principal can be easily generated using the Azure CLI. Using the following command will create the SP in the supported structure.   
+At Subscription Scope: `az ad sp create-for-rbac --name "azure-arm-action" --role contributor --scopes=/subscriptions/********-****-****-****-************/ --sdk-auth -o json`    
+The JSON, which shall be used for authentication, should be in the following format:
+```json
+{
+  "clientId": "********-****-****-****-************",
+  "clientSecret": "[*]",
+  "subscriptionId": "********-****-****-****-************",
+  "tenantId": "********-****-****-****-************",
+  "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
+  "resourceManagerEndpointUrl": "https://management.azure.com/",
+  "activeDirectoryGraphResourceId": "https://graph.windows.net/",
+  "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
+  "galleryEndpointUrl": "https://gallery.azure.com/",
+  "managementEndpointUrl": "https://management.core.windows.net/"
+}
+```
 
+## Example
 ```yml
 on: [push]
 name: ARMActionSample
@@ -63,14 +84,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-
-    - name: Login to Azure
-        uses: Azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - uses: whiteducksoftware/azure-arm-action@v3.3
+    - uses: whiteducksoftware/azure-arm-action@master
       with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
         resourceGroupName: <YourResourceGroup>
         templateLocation: <path/to/azuredeploy.json>
         parameters: <path/to/parameters.json> OR <KEY=VALUE>

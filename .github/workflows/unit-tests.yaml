@@ -7,40 +7,29 @@ jobs:
   test_action_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Login to Azure
-        uses: Azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set up Go 1.16
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.16
-
-      - name: Check out source code
+      - name: Check out Source Code
         uses: actions/checkout@v1
 
-      - name: Build
-        env:
-          GOPROXY: "https://proxy.golang.org"
-          CGO_ENABLED: 0 
-          GOOS: linux 
-          GOARCH: amd64
-        run: go build -a -installsuffix cgo -ldflags="-w -s" .
+      - uses: ./
+        id: deploy
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resourceGroupName: azurearmaction
+          templateLocation: examples/template/template.json
+          parameters: examples/template/parameters.json
+          deploymentName: github-advanced-test
 
-      - name: Test
-        env:
-          GOPROXY: "https://proxy.golang.org"
-          CGO_ENABLED: 0 
-          GOOS: linux 
-          GOARCH: amd64
-          LOG_LEVEL: DEBUG
-          INPUT_RESOURCEGROUPNAME: azurearmaction
-          INPUT_TEMPLATELOCATION: ./test/template.json
-          INPUT_PARAMETERS: ./test/parameters.json
-          INPUT_OVERRIDEPARAMETERS: |
-            containerName=github-action-overriden
-            connectionString='Server=tcp:test.database.windows.net;Database=test;User ID=test;Password=test;Trusted_Connection=False;Encrypt=True;'
-          INPUT_DEPLOYMENTNAME: github-test
-          INPUT_DEPLOYMENTMODE: Incremental
-        run: go test -v -failfast .
+      - run: echo ${{ steps.deploy.outputs.containerName }}
+
+      - uses: ./
+        id: deploy2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          resourceGroupName: azurearmaction
+          templateLocation: examples/template/template.json
+          parameters: examples/template/parameters.json
+          deploymentName: github-advanced-test
+          overrideParameters: |
+            containerName=${{ steps.deploy.outputs.containerName }}-overriden
+
+      - run: echo ${{ steps.deploy2.outputs.containerName }}
