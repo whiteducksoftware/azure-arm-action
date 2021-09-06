@@ -41,7 +41,7 @@ func GetSdkAuthFromString(credentials string) (SDKAuth, error) {
 }
 
 // GetArmAuthorizerFromSdkAuth creates an ARM authorizer from an Sp
-func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (autorest.Authorizer, error) {
+func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (*autorest.Authorizer, error) {
 	oauthconfig, err := adal.NewOAuthConfig(azure.PublicCloud.ActiveDirectoryEndpoint, auth.TenantID)
 	if err != nil {
 		return nil, err
@@ -61,7 +61,7 @@ func GetArmAuthorizerFromSdkAuth(auth SDKAuth) (autorest.Authorizer, error) {
 	var authorizer autorest.Authorizer
 	authorizer = autorest.NewBearerAuthorizer(token)
 
-	return authorizer, nil
+	return &authorizer, nil
 }
 
 // GetArmAuthorizerFromSdkAuthJSON creats am ARM authorizer from the passed sdk auth file
@@ -126,9 +126,9 @@ func GetArmAuthorizerFromCLI() (autorest.Authorizer, error) {
 }
 
 // GetDeploymentsClient takes the azure authorizer and creates an ARM deployments client on the desired subscription
-func GetDeploymentsClient(subscriptionID string, authorizer autorest.Authorizer) resources.DeploymentsClient {
+func GetDeploymentsClient(subscriptionID string, authorizer *autorest.Authorizer) resources.DeploymentsClient {
 	deployClient := resources.NewDeploymentsClient(subscriptionID)
-	deployClient.Authorizer = authorizer
+	deployClient.Authorizer = *authorizer
 	return deployClient
 }
 

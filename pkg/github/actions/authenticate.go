@@ -12,8 +12,8 @@ import (
 )
 
 // Authenticate creates and azure authorizer
-func Authenticate(inputs github.Inputs) (autorest.Authorizer, error) {
-	var authorizer autorest.Authorizer
+func Authenticate(inputs github.Inputs) (*autorest.Authorizer, error) {
+	var authorizer *autorest.Authorizer
 
 	// Load authorizer from the service principal
 	authorizer, err := azure.GetArmAuthorizerFromSdkAuth(inputs.Credentials)
