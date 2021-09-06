@@ -6,7 +6,7 @@ WORKDIR /app
 # Git is required for fetching the dependencies.
 # Ca-certificates is required to call HTTPS endpoints.
 RUN apk update && \
-    apk add --no-cache git ca-certificates upx && \
+    apk add --no-cache git ca-certificates && \
     update-ca-certificates
 
 # Add src files
@@ -19,8 +19,7 @@ RUN go mod verify
 # Build the binary.
 ARG GIT_SHA
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
-    go build -ldflags="-w -s -X main.gitSha=${GIT_SHA} -X main.goVersion=$(go version | cut -d " " -f 3) -X main.buildTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -a -o /go/bin/azure-arm-action \
-    && upx -q /go/bin/azure-arm-action
+    go build -a -o /go/bin/azure-arm-action
 
 # Runner
 FROM scratch
