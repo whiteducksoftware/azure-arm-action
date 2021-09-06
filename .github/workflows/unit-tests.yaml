@@ -10,7 +10,7 @@ jobs:
       - name: Check out Source Code
         uses: actions/checkout@v1
 
-      - uses: ./action.yml
+      - uses: ../action.yml
         id: deploy
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -21,7 +21,7 @@ jobs:
 
       - run: echo ${{ steps.deploy.outputs.containerName }}
 
-      - uses: ./action.yml
+      - uses: ../action.yml
         id: deploy2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
