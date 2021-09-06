@@ -7,15 +7,10 @@ jobs:
   test_action_job:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.16
-        uses: actions/setup-go@v1
-        with:
-          go-version: 1.16
-
       - name: Check out Source Code
         uses: actions/checkout@v1
 
-      - uses: whiteducksoftware/azure-arm-action@${{ github.ref }}
+      - uses: ./action.yml
         id: deploy
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -26,7 +21,7 @@ jobs:
 
       - run: echo ${{ steps.deploy.outputs.containerName }}
 
-      - uses: whiteducksoftware/azure-arm-action@${{ github.ref }}
+      - uses: ./action.yml
         id: deploy2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
