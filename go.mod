@@ -10,11 +10,11 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/whiteducksoftware/golang-utilities/azure/auth v0.0.0-20210907103648-d311fb9b1880
-	github.com/whiteducksoftware/golang-utilities/azure/resources v0.0.0-20210907103648-d311fb9b1880
-	github.com/whiteducksoftware/golang-utilities/github/actions v0.0.0-20210907103648-d311fb9b1880
+	github.com/whiteducksoftware/golang-utilities/azure/auth v0.0.0-20210907113822-f506cb51b82c
+	github.com/whiteducksoftware/golang-utilities/azure/resources v0.0.0-20210907111803-6faa71ffaf37
+	github.com/whiteducksoftware/golang-utilities/github/actions v0.0.0-20210907113822-f506cb51b82c
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
+	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34 // indirect
 )
 
 // Temporary fix until https://github.com/Azure/go-autorest/pull/653 is merged.
