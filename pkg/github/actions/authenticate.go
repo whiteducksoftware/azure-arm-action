@@ -11,9 +11,9 @@ import (
 )
 
 // Authenticate creates and azure authorizer
-func Authenticate(inputs github.Inputs) (autorest.Authorizer, error) {
+func Authenticate(options github.Options) (autorest.Authorizer, error) {
 	// Load authorizer from the service principal
-	authorizer, err := inputs.Credentials.GetResourceManagerAuthorizer()
+	authorizer, err := options.Credentials.GetResourceManagerAuthorizer()
 	if err != nil {
 		return nil, err
 	}

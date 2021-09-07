@@ -30,6 +30,7 @@ type Inputs struct {
 	Parameters         parameters    `env:"INPUT_PARAMETERS"`
 	OverrideParameters parameters    `env:"INPUT_OVERRIDEPARAMETERS"`
 	ResourceGroupName  string        `env:"INPUT_RESOURCEGROUPNAME"`
+	ManagementGroupId  string        `env:"INPUT_MANAGEMENTGROUPID"`
 	DeploymentName     string        `env:"INPUT_DEPLOYMENTNAME"`
 	DeploymentMode     string        `env:"INPUT_DEPLOYMENTMODE"`
 	Timeout            time.Duration `env:"INPUT_TIMEOUT" envDefault:"20m"`
@@ -38,7 +39,7 @@ type Inputs struct {
 // Options is a combined struct of all inputs
 type Options struct {
 	actions.GitHub
-	Inputs Inputs
+	Inputs
 }
 
 // LoadOptions parses the environment vars and reads github options and our custom inputs

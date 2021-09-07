@@ -39,8 +39,7 @@ func main() {
 	}
 
 	// read inptus
-	inputs := opts.Inputs
-	ctx, cancel := context.WithTimeout(context.Background(), inputs.Timeout)
+	ctx, cancel := context.WithTimeout(context.Background(), opts.Timeout)
 	setupInterruptHandler(cancel)
 
 	// Output some information
@@ -49,14 +48,14 @@ func main() {
 	}
 
 	// authenticate
-	authorizer, err := actions.Authenticate(inputs)
+	authorizer, err := actions.Authenticate(opts)
 	if err != nil {
 		logrus.Errorf("Failed to authenticate with azure: %s", err)
 		os.Exit(1)
 	}
 
 	// deploy the template
-	resultDeployment, err := actions.Deploy(ctx, inputs, authorizer)
+	resultDeployment, err := actions.Deploy(ctx, opts, authorizer)
 	if err != nil {
 		logrus.Errorf("Failed to deploy the template: %s", err)
 		os.Exit(1)

@@ -5,15 +5,19 @@ go 1.16
 require (
 	github.com/Azure/azure-sdk-for-go v57.1.0+incompatible
 	github.com/Azure/go-autorest/autorest v0.11.20
-	github.com/Azure/go-autorest/autorest/adal v0.9.15 // indirect
 	github.com/caarlos0/env/v6 v6.7.1
 	github.com/google/uuid v1.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha1
-	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha1
+	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha4
 	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3
+
+)
+
+require (
+	github.com/Azure/go-autorest/autorest/adal v0.9.15 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34 // indirect
 )

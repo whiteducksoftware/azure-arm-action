@@ -6,8 +6,11 @@ inputs:
     description: "Paste output of `az ad sp create-for-rbac -o json` as value of secret variable: AZURE_CREDENTIALS"
     required: true
   resourceGroupName:
-    description: "Provide the name of a resource group."
-    required: true
+    description: "Provide the name of a resource group. If not set a the resources will be deployed at subscription scope"
+    required: false
+  managementGroupId:
+    description: "Provide the id of the target management group."
+    required: false
   templateLocation:
     description: "Specify the path to the Azure Resource Manager template."
     required: true
