@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	opts             *github.Options
+	opts             github.Options
 	authorizer       autorest.Authorizer
 	deploymentResult resources.DeploymentExtended
 )
