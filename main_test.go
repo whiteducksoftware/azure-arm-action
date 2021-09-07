@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/Azure/azure-sdk-for-go/profiles/2019-03-01/resources/mgmt/resources"
+	"github.com/Azure/azure-sdk-for-go/profiles/latest/resources/mgmt/resources"
 	"github.com/Azure/go-autorest/autorest"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"

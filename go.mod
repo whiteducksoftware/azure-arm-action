@@ -10,9 +10,9 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/whiteducksoftware/golang-utilities/azure/auth v0.0.0-20210906153454-19f8cc048dc7
-	github.com/whiteducksoftware/golang-utilities/azure/resources v0.0.0-20210906153454-19f8cc048dc7
-	github.com/whiteducksoftware/golang-utilities/github/actions v0.0.0-20210906153454-19f8cc048dc7
+	github.com/whiteducksoftware/golang-utilities/azure/auth v0.0.0-20210907103648-d311fb9b1880
+	github.com/whiteducksoftware/golang-utilities/azure/resources v0.0.0-20210907103648-d311fb9b1880
+	github.com/whiteducksoftware/golang-utilities/github/actions v0.0.0-20210907103648-d311fb9b1880
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210903071746-97244b99971b // indirect
 )

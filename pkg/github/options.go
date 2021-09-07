@@ -37,24 +37,23 @@ type Inputs struct {
 
 // Options is a combined struct of all inputs
 type Options struct {
-	GitHub actions.GitHub
+	actions.GitHub
 	Inputs Inputs
 }
 
 // LoadOptions parses the environment vars and reads github options and our custom inputs
-func LoadOptions() (*Options, error) {
+func LoadOptions() (Options, error) {
 	github := actions.GitHub{}
-	if err := env.Parse(&github); err != nil {
-		return nil, fmt.Errorf("failed to parse github envrionments: %s", err)
+	if err := github.Load(); err != nil {
+		return Options{}, err
 	}
 
 	inputs := Inputs{}
-	err := env.ParseWithFuncs(&inputs, customTypeParser)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse inputs: %s", err)
+	if err := env.ParseWithFuncs(&inputs, customTypeParser); err != nil {
+		return Options{}, fmt.Errorf("failed to parse inputs: %s", err)
 	}
 
-	return &Options{
+	return Options{
 		GitHub: github,
 		Inputs: inputs,
 	}, nil
@@ -62,15 +61,14 @@ func LoadOptions() (*Options, error) {
 
 // custom type parser
 var customTypeParser = map[reflect.Type]env.ParserFunc{
-	reflect.TypeOf(auth.SDKAuth{}): wrapGetServicePrincipal,
+	reflect.TypeOf(auth.SDKAuth{}): wrapParseServicePrincipal,
 	reflect.TypeOf(template{}):     wrapReadJSON,
 	reflect.TypeOf(parameters{}):   wrapReadParameters,
 }
 
-func wrapGetServicePrincipal(v string) (interface{}, error) {
+func wrapParseServicePrincipal(v string) (interface{}, error) {
 	var sdkAuth auth.SDKAuth
-	err := sdkAuth.FromString(v)
-	if err != nil {
+	if err := sdkAuth.FromString(v); err != nil {
 		return nil, err
 	}
 

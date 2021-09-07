@@ -44,9 +44,8 @@ func main() {
 	setupInterruptHandler(cancel)
 
 	// Output some information
-	githubOptions := opts.GitHub
-	if githubOptions.RunningAsAction {
-		logrus.Infof("==== Running workflow %s for %s@%s ====", githubOptions.Workflow, githubOptions.Ref, githubOptions.Commit)
+	if opts.RunningAsAction {
+		logrus.Infof("==== Running workflow %s for %s@%s ====", opts.Workflow, opts.Ref, opts.Commit)
 	}
 
 	// authenticate
@@ -76,7 +75,7 @@ func main() {
 		githubactions.SetOutput(name, output.Value)
 	}
 
-	if githubOptions.RunningAsAction {
+	if opts.RunningAsAction {
 		logrus.Info("==== Successfully finished running the workflow ====")
 	}
 }
