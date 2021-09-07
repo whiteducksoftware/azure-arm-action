@@ -12,7 +12,7 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/caarlos0/env"
+	"github.com/caarlos0/env/v6"
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/util"
 	"github.com/whiteducksoftware/golang-utilities/azure/auth"
