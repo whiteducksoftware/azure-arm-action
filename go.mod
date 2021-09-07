@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha1
 	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha1
-	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha2
+	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34 // indirect
 )

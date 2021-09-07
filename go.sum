@@ -61,6 +61,8 @@ github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha1 h1:j
 github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha1/go.mod h1:gQa3xTU/E2dqJfjmUu+xGp4wlyD6jcKqvqqcTJk8EEc=
 github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha2 h1:LtuU5cokq9oCGMp/MtQXF9dNvHkOGuHnrPukaol7ZHQ=
 github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha2/go.mod h1:8hhuliwy8hLgefWGGsObXgUVJch3mTIF9nM59cGTMqQ=
+github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3 h1:I15AheAzx1Kdp2m0IGiYZGaR2N/cYPW1qysra4BB0VI=
+github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3/go.mod h1:8hhuliwy8hLgefWGGsObXgUVJch3mTIF9nM59cGTMqQ=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20201002170205-7f63de1d35b0/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a/go.mod h1:P+XmwS30IXTQdn5tA2iutPOUgjI07+tq3H3K9MVA1s8=
