@@ -9,8 +9,8 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha1
-	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha4
+	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha2
+	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha5
 	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3
 
 )

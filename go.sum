@@ -57,8 +57,12 @@ github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5Cc
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha1 h1:fNPabaAnEo2CGNa7I5rahPj8RqQimWlFsdHBEIxM2uY=
 github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha1/go.mod h1:kZj0RBtQlPt+izm27sJl0c6d1kDfhk4vw5nEOG6iWX4=
+github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha2 h1:Z4XHB88AJpPscXnaB5f6VGqG60qlmJ/87ZPYbXeU/7g=
+github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha2/go.mod h1:62LB8aurT2qkpSPFLIhgHG8gHZbMcs5Qwwu1ljf12TM=
 github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha4 h1:+uniMrvm+1M6fdmhkQqEkI7FTJICp6jgHkU6z4jTkVQ=
 github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha4/go.mod h1:gQa3xTU/E2dqJfjmUu+xGp4wlyD6jcKqvqqcTJk8EEc=
+github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha5 h1:CoNsfTkjjT/2SoswcC68Jbg4mMosWC0E+Xmn9UO3N28=
+github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha5/go.mod h1:gQa3xTU/E2dqJfjmUu+xGp4wlyD6jcKqvqqcTJk8EEc=
 github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3 h1:I15AheAzx1Kdp2m0IGiYZGaR2N/cYPW1qysra4BB0VI=
 github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3/go.mod h1:8hhuliwy8hLgefWGGsObXgUVJch3mTIF9nM59cGTMqQ=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=

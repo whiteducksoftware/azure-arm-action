@@ -25,7 +25,7 @@ func Deploy(ctx context.Context, options github.Options, authorizer autorest.Aut
 	var err error
 
 	// Load the arm deployments client
-	deploymentsClient := deployments.GetClient(options.Credentials.SubscriptionID, authorizer)
+	deploymentsClient := deployments.GetClientWithBaseUri(options.Credentials.ARMEndpointURL, options.Credentials.SubscriptionID, authorizer)
 	u := uuid.New().String()
 	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", options.DeploymentName, u, options.DeploymentName, u, options.DeploymentMode)
 	options.DeploymentName = fmt.Sprintf("%s-%s", options.DeploymentName, u)

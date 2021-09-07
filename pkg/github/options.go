@@ -25,7 +25,7 @@ type parameters map[string]interface{}
 
 // Inputs represents our custom inputs for the action
 type Inputs struct {
-	Credentials        auth.SDKAuth  `env:"INPUT_CREDS"`
+	Credentials        *auth.SDKAuth  `env:"INPUT_CREDS"`
 	Template           template      `env:"INPUT_TEMPLATELOCATION"`
 	Parameters         parameters    `env:"INPUT_PARAMETERS"`
 	OverrideParameters parameters    `env:"INPUT_OVERRIDEPARAMETERS"`
