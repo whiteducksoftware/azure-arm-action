@@ -2,13 +2,6 @@
 FROM golang:1.16-alpine as builder
 WORKDIR /app
 
-# Install git + SSL ca certificates.
-# Git is required for fetching the dependencies.
-# Ca-certificates is required to call HTTPS endpoints.
-RUN apk update && \
-    apk add --no-cache git ca-certificates && \
-    update-ca-certificates
-
 # Add src files
 ADD . .
 
@@ -17,15 +10,11 @@ RUN go mod download
 RUN go mod verify
 
 # Build the binary.
-ARG GIT_SHA
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
     go build -a -o /usr/local/bin/azure-arm-action
 
 # Runner
-FROM scratch
-
-# Import the user and group files from the builder.
-COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+FROM gcr.io/distroless/base
 
 # Copy our static executable.
 COPY --from=builder /usr/local/bin/azure-arm-action /usr/local/bin/azure-arm-action
