@@ -7,13 +7,14 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"os/signal"
 
 	"github.com/sirupsen/logrus"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github"
 	"github.com/whiteducksoftware/azure-arm-action/pkg/github/actions"
-	githubactions "github.com/whiteducksoftware/golang-utilities/github/actions"
+	"github.com/whiteducksoftware/golang-utilities/github/actions/io"
 )
 
 func init() {
@@ -34,7 +35,8 @@ func init() {
 func main() {
 	opts, err := github.LoadOptions()
 	if err != nil {
-		logrus.Errorf("failed to load options: %s", err)
+		logrus.Errorf("failed to load options: %s", err.Error())
+		io.WriteError(io.Message{Message: fmt.Sprintf("failed to load options: %s", err.Error())})
 		os.Exit(1)
 	}
 
@@ -50,28 +52,31 @@ func main() {
 	// authenticate
 	authorizer, err := actions.Authenticate(opts)
 	if err != nil {
-		logrus.Errorf("Failed to authenticate with azure: %s", err)
+		logrus.Errorf("Failed to authenticate with azure: %s", err.Error())
+		io.WriteError(io.Message{Message: fmt.Sprintf("Failed to authenticate with azure: %s", err.Error())})
 		os.Exit(1)
 	}
 
 	// deploy the template
 	resultDeployment, err := actions.Deploy(ctx, opts, authorizer)
 	if err != nil {
-		logrus.Errorf("Failed to deploy the template: %s", err)
+		logrus.Errorf("Failed to deploy the template: %s", err.Error())
+		io.WriteError(io.Message{Message: fmt.Sprintf("Failed to deploy the template: %s", err.Error())})
 		os.Exit(1)
 	}
 
 	// parse the template outputs
 	outputs, err := actions.ParseOutputs(resultDeployment.Properties.Outputs)
 	if err != nil {
-		logrus.Errorf("Failed to parse the template outputs: %s", err)
+		logrus.Errorf("Failed to parse the template outputs: %s", err.Error())
+		io.WriteError(io.Message{Message: fmt.Sprintf("Failed to parse the template outputs: %s", err.Error())})
 		os.Exit(1)
 	}
 
 	// write the outputs and the deploymentName to our outputs
-	githubactions.SetOutput("deploymentName", *resultDeployment.Name)
+	io.SetOutput("deploymentName", *resultDeployment.Name)
 	for name, output := range outputs {
-		githubactions.SetOutput(name, output.Value)
+		io.SetOutput(name, output.Value)
 	}
 
 	if opts.RunningAsAction {

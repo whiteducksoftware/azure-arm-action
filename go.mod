@@ -9,14 +9,13 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha2
+	github.com/whiteducksoftware/golang-utilities/azure/auth v0.1.0-alpha3
 	github.com/whiteducksoftware/golang-utilities/azure/resources v0.1.0-alpha5
-	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha3
+	github.com/whiteducksoftware/golang-utilities/github/actions v0.1.0-alpha6
 
 )
 
 require (
-	github.com/Azure/go-autorest/autorest/adal v0.9.15 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34 // indirect

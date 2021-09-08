@@ -27,22 +27,22 @@ func Deploy(ctx context.Context, options github.Options, authorizer autorest.Aut
 	// Load the arm deployments client
 	deploymentsClient := deployments.GetClientWithBaseUri(options.Credentials.ARMEndpointURL, options.Credentials.SubscriptionID, authorizer)
 	u := uuid.New().String()
-	logrus.Infof("Creating deployment %s with uuid %s -> %s-%s, mode: %s", options.DeploymentName, u, options.DeploymentName, u, options.DeploymentMode)
-	options.DeploymentName = fmt.Sprintf("%s-%s", options.DeploymentName, u)
+	deploymentName := fmt.Sprintf("%s-%s", options.DeploymentName, u)
+	logrus.Infof("Creating deployment %s, mode: %s", deploymentName, options.DeploymentMode)
 
 	// Build our final parameters
 	parameter := util.MergeParameters(options.Parameters, options.OverrideParameters)
 
 	// Validate deployment
-	logrus.Infof("Validating deployment %s", options.DeploymentName)
+	logrus.Infof("Validating deployment %s", deploymentName)
 
 	var validationResult resources.DeploymentValidateResult
 	if len(options.ResourceGroupName) > 0 {
-		validationResult, err = deployments.Validate(ctx, deploymentsClient, options.ResourceGroupName, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		validationResult, err = deployments.Validate(ctx, deploymentsClient, options.ResourceGroupName, deploymentName, options.DeploymentMode, options.Template, parameter)
 	} else if len(options.ManagementGroupId) > 0 {
-		validationResult, err = deployments.ValidateAtManagementGroupScope(ctx, deploymentsClient, options.ManagementGroupId, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		validationResult, err = deployments.ValidateAtManagementGroupScope(ctx, deploymentsClient, deploymentName, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
 	} else {
-		validationResult, err = deployments.ValidateAtSubscriptionScope(ctx, deploymentsClient, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		validationResult, err = deployments.ValidateAtSubscriptionScope(ctx, deploymentsClient, deploymentName, options.DeploymentMode, options.Template, parameter)
 	}
 
 	if err != nil {
@@ -55,15 +55,15 @@ func Deploy(ctx context.Context, options github.Options, authorizer autorest.Aut
 	logrus.Info("Validation finished.")
 
 	// Create and wait for completion of the deployment
-	logrus.Infof("Creating deployment %s", options.DeploymentName)
+	logrus.Infof("Creating deployment %s", deploymentName)
 
 	var resultDeployment resources.DeploymentExtended
 	if len(options.ResourceGroupName) > 0 {
-		resultDeployment, err = deployments.Create(ctx, deploymentsClient, options.ResourceGroupName, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		resultDeployment, err = deployments.Create(ctx, deploymentsClient, options.ResourceGroupName, deploymentName, options.DeploymentMode, options.Template, parameter)
 	} else if len(options.ManagementGroupId) > 0 {
-		resultDeployment, err = deployments.CreateAtManagementGroupScope(ctx, deploymentsClient, options.ManagementGroupId, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		resultDeployment, err = deployments.CreateAtManagementGroupScope(ctx, deploymentsClient, deploymentName, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
 	} else {
-		resultDeployment, err = deployments.CreateAtSubscriptionScope(ctx, deploymentsClient, options.DeploymentName, options.DeploymentMode, options.Template, parameter)
+		resultDeployment, err = deployments.CreateAtSubscriptionScope(ctx, deploymentsClient, deploymentName, options.DeploymentMode, options.Template, parameter)
 	}
 
 	if err != nil {
