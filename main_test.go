@@ -26,7 +26,7 @@ func TestLoadOptions(t *testing.T) {
 
 func TestAuthentication(t *testing.T) {
 	var err error
-	authorizer, err = actions.Authenticate(opts.Inputs)
+	authorizer, err = actions.Authenticate(opts)
 	if err != nil {
 		t.Error(err.Error())
 	}
@@ -34,7 +34,7 @@ func TestAuthentication(t *testing.T) {
 
 func TestDeploy(t *testing.T) {
 	var err error
-	deploymentResult, err = actions.Deploy(context.Background(), opts.Inputs, authorizer)
+	deploymentResult, err = actions.Deploy(context.Background(), opts, authorizer)
 	if err != nil {
 		t.Error(err.Error())
 	}
