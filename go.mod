@@ -18,7 +18,7 @@ require (
 require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
-	golang.org/x/sys v0.0.0-20210906170528-6f6e22806c34 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
 
 // Temporary fix until https://github.com/Azure/go-autorest/pull/653 is merged.
